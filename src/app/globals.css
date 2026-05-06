@@ -1,0 +1,212 @@
+@import "tailwindcss";
+@import "../../theme.css";
+@import "../../variables.css";
+
+/* ===== Base Reset ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-suisseintl);
+  color: var(--color-ink-blue);
+  background: var(--color-ghost-white);
+}
+
+/* ===== Column Design — Backgrounds ===== */
+.grid-pattern {
+  background-image: radial-gradient(circle, var(--color-faded-grid-blue) 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  opacity: 0.08;
+}
+
+.hero-glow {
+  background:
+    radial-gradient(ellipse 600px 400px at 15% 40%, rgba(236, 101, 43, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 85% 30%, rgba(17, 26, 74, 0.03) 0%, transparent 70%);
+}
+
+/* ===== Column Design — Text ===== */
+.gradient-text {
+  background: var(--gradient-soft-horizon-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Column Design — Surfaces ===== */
+/* Per DESIGN.md: "Enhance surface depth with the subtle card shadow" */
+.surface-card {
+  background: var(--color-ghost-white);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-subtle);
+}
+.surface-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+  transition: all 0.25s ease;
+}
+
+.surface-elevated {
+  background: var(--color-ghost-white);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-xl);
+}
+
+.surface-inset {
+  background: var(--color-fog-gray);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-subtle-3);
+}
+
+/* ===== Column Design — Buttons ===== */
+/* Per DESIGN.md: "Emphasize critical actions with Action Orange background" */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: var(--color-action-orange);
+  color: var(--color-ghost-white);
+  font-family: var(--font-suisseintl);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  border-radius: var(--radius-buttons);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(236, 101, 43, 0.25);
+}
+.btn-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 16px rgba(236, 101, 43, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Per DESIGN.md: "Secondary Button - Outlined" — Deep Plum border */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: transparent;
+  color: var(--color-deep-plum);
+  font-family: var(--font-suisseintl);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  border-radius: var(--radius-buttons);
+  border: 1px solid var(--color-deep-plum);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: var(--color-deep-plum);
+  color: var(--color-ghost-white);
+}
+
+/* Per DESIGN.md: Ghost Button - Light */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--color-charcoal-text);
+  font-family: var(--font-suisseintl);
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  border: none;
+  border-radius: var(--radius-buttons);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.btn-ghost:hover { color: var(--color-ink-blue); }
+
+/* ===== Column Design — Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-family: var(--font-suisseintl);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+}
+.badge-subtle {
+  background: var(--color-fog-gray);
+  color: var(--color-slate-text);
+  border: 1px solid var(--color-steel-gray);
+}
+.badge-success {
+  background: rgba(68, 180, 139, 0.06);
+  color: var(--color-success-moss);
+  border: 1px solid rgba(68, 180, 139, 0.12);
+}
+
+/* ===== Column Design — Card Callout Orange ===== */
+/* Per DESIGN.md: Card - Callout Orange — Action Orange bg, 6px radius */
+.card-callout {
+  background: var(--color-action-orange);
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  color: var(--color-ghost-white);
+}
+
+/* ===== Animations ===== */
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-fade-up { animation: fadeUp 0.5s ease forwards; }
+.animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Stagger children fade-up */
+.stagger > * { opacity: 0; animation: fadeUp 0.5s ease forwards; }
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 80ms; }
+.stagger > *:nth-child(3) { animation-delay: 160ms; }
+.stagger > *:nth-child(4) { animation-delay: 240ms; }
+.stagger > *:nth-child(5) { animation-delay: 320ms; }
+.stagger > *:nth-child(6) { animation-delay: 400ms; }
+
+/* ===== Table ===== */
+.table-header {
+  display: grid;
+  padding: 10px 20px;
+  background: var(--color-fog-gray);
+  border-bottom: 1px solid var(--color-steel-gray);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-slate-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.table-row {
+  display: grid;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-steel-gray);
+  font-size: 14px;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+.table-row:hover { background: var(--color-fog-gray); }
+
+/* ===== Game canvas ===== */
+.game-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}

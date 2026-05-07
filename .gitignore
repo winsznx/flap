@@ -19,6 +19,11 @@
 /.open-next/
 /.wrangler/
 
+# foundry
+/cache/
+/out/
+/broadcast/
+
 # production
 /build
 

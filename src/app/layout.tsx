@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/700.css";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Flap — Tap to Fly, Earn cUSD",
+  title: "Flap — Tap to fly, stake cUSD",
   description:
-    "A flappy bird game on Celo. Tap to fly, dodge pipes, collect coins, and earn stablecoins. Built for MiniPay.",
+    "A flappy-shaped arcade game on Celo. Stake cUSD, beat the threshold, climb the daily bounty pot.",
   openGraph: {
-    title: "Flap — Tap to Fly, Earn cUSD",
-    description: "Flappy bird meets stablecoins. Play on MiniPay.",
+    title: "Flap — Tap to fly, stake cUSD",
+    description: "Flappy bird meets stablecoins. Play on Celo.",
     type: "website",
   },
 };
@@ -25,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <body className="antialiased">{children}</body>
     </html>
   );

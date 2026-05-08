@@ -17,14 +17,23 @@ export default function ProfilePage() {
   const [totalGames, setTotalGames] = useState(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem("flap_history");
-    if (saved) {
-      const parsed = JSON.parse(saved) as GameRecord[];
-      setHistory(parsed);
-      setTotalGames(parsed.length);
+    try {
+      const saved = localStorage.getItem("flap_history");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setHistory(parsed as GameRecord[]);
+          setTotalGames(parsed.length);
+        }
+      }
+      const hs = localStorage.getItem("flap_highscore");
+      if (hs) {
+        const n = parseInt(hs, 10);
+        if (Number.isFinite(n)) setHighScore(n);
+      }
+    } catch {
+      // localStorage shape is from an older client or got corrupted — fall through to empty.
     }
-    const hs = localStorage.getItem("flap_highscore");
-    if (hs) setHighScore(parseInt(hs, 10));
   }, []);
 
   const totalCoins = history.reduce((sum, g) => sum + (g.coins || 0), 0);

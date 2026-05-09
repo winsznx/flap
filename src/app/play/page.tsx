@@ -4,6 +4,9 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { FlapEngine, type GameEventType } from "@/game/engine";
 import type { Difficulty } from "@/game/settings";
 import Link from "next/link";
+import { ConnectButton } from "@/components/ConnectButton";
+import { BountyPill } from "@/components/BountyPill";
+import { StartPlayPanel } from "@/components/StartPlayPanel";
 
 export default function PlayPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -100,7 +103,7 @@ export default function PlayPage() {
   return (
     <div className="min-h-screen bg-ink-blue flex flex-col items-center justify-center p-4">
       {/* Back nav */}
-      <div className="w-full max-w-[420px] mb-4 flex items-center justify-between">
+      <div className="w-full max-w-[420px] mb-4 flex items-center justify-between gap-3 flex-wrap">
         <Link
           href="/"
           className="text-[14px] text-white/60 hover:text-white transition-colors flex items-center gap-2 no-underline"
@@ -110,9 +113,9 @@ export default function PlayPage() {
           </svg>
           Back
         </Link>
-        <div className="flex items-center gap-2 text-[12px] text-white/40 font-mono">
-          <span className="w-2 h-2 rounded-full bg-success-moss pulse-live" />
-          Celo Mainnet
+        <div className="flex items-center gap-2">
+          <BountyPill />
+          <ConnectButton />
         </div>
       </div>
 
@@ -236,8 +239,16 @@ export default function PlayPage() {
           Mode: {difficulty}
         </span>
         <span className="text-[12px] text-white/30 font-mono">
-          Entry: $0.05 cUSD
+          Free practice — stake below to play for sats-back.
         </span>
+      </div>
+
+      {/* Onchain stake-and-play */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Stake & play
+        </h3>
+        <StartPlayPanel />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/700.css";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://flap.timjosh507.workers.dev";
 
@@ -38,7 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

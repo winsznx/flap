@@ -4,14 +4,26 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/700.css";
 import "./globals.css";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://flap.timjosh507.workers.dev";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Flap — Tap to fly, stake cUSD",
   description:
     "A flappy-shaped arcade game on Celo. Stake cUSD, beat the threshold, climb the daily bounty pot.",
   openGraph: {
+    type: "website",
+    siteName: "Flap",
     title: "Flap — Tap to fly, stake cUSD",
     description: "Flappy bird meets stablecoins. Play on Celo.",
-    type: "website",
+    url: "/",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Flap — Sats-back arcade" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flap — Tap to fly, stake cUSD",
+    description: "Flappy bird meets stablecoins. Play on Celo.",
+    images: ["/og.png"],
   },
   other: {
     "talentapp:project_verification":

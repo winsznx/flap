@@ -7,6 +7,9 @@ import Link from "next/link";
 import { BountyPill } from "@/components/BountyPill";
 import { ClaimBountyPanel } from "@/components/ClaimBountyPanel";
 import { ConnectButton } from "@/components/ConnectButton";
+import { HopButton } from "@/components/HopButton";
+import { SettlePlayButton } from "@/components/SettlePlayButton";
+import { SponsorBountyPanel } from "@/components/SponsorBountyPanel";
 import { StartPlayPanel } from "@/components/StartPlayPanel";
 
 export default function PlayPage() {
@@ -258,6 +261,30 @@ export default function PlayPage() {
           ▸ Bounty
         </h3>
         <ClaimBountyPanel />
+      </div>
+
+      {/* Sponsor today's bounty */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Sponsor pool
+        </h3>
+        <SponsorBountyPanel />
+      </div>
+
+      {/* Settle a finished play (permissionless) */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Settle
+        </h3>
+        <SettlePlayButton />
+      </div>
+
+      {/* Daily hop retention */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Daily hop
+        </h3>
+        <HopButton />
       </div>
     </div>
   );

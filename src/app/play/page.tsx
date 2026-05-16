@@ -4,8 +4,9 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { FlapEngine, type GameEventType } from "@/game/engine";
 import type { Difficulty } from "@/game/settings";
 import Link from "next/link";
-import { ConnectButton } from "@/components/ConnectButton";
 import { BountyPill } from "@/components/BountyPill";
+import { ClaimBountyPanel } from "@/components/ClaimBountyPanel";
+import { ConnectButton } from "@/components/ConnectButton";
 import { StartPlayPanel } from "@/components/StartPlayPanel";
 
 export default function PlayPage() {
@@ -249,6 +250,14 @@ export default function PlayPage() {
           ▸ Stake & play
         </h3>
         <StartPlayPanel />
+      </div>
+
+      {/* Yesterday's bounty claim */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Bounty
+        </h3>
+        <ClaimBountyPanel />
       </div>
     </div>
   );

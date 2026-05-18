@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { OnchainProfile } from "@/components/OnchainProfile";
+import { RecentPlays } from "@/components/RecentPlays";
 
 interface GameRecord {
   score: number;
@@ -60,6 +61,17 @@ export default function ProfilePage() {
 
         {/* On-chain stats first — permanent record */}
         <OnchainProfile />
+
+        {/* Recent plays from chain — inline settle action */}
+        <div className="card-surface px-6 py-5 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[16px] font-semibold text-ink-blue">Recent on-chain plays</h3>
+            <span className="text-[11px] text-slate-text font-mono uppercase tracking-widest">
+              PlayOpened · live state
+            </span>
+          </div>
+          <RecentPlays />
+        </div>
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">

@@ -1,6 +1,12 @@
 "use client";
 
-import { useAccount, useReadContract, useReadContracts } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useReadContracts,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -50,6 +56,27 @@ export function OnchainProfile() {
     })),
     query: { enabled, refetchInterval: 60_000 },
   });
+
+  const { writeContract, data: claimHash, isPending: claimSigning, variables: claimVars, reset: resetClaim } =
+    useWriteContract();
+  const { isLoading: claimMining, isSuccess: claimConfirmed } = useWaitForTransactionReceipt({
+    hash: claimHash,
+  });
+
+  function claim(milestone: number) {
+    if (!isConnected || !isFlapDeployed) return;
+    writeContract({
+      abi: flapAbi,
+      address: FLAP_ADDRESS,
+      functionName: "claimStreakBadge",
+      args: [milestone],
+    });
+  }
+
+  const pendingMilestone =
+    claimSigning || claimMining
+      ? (claimVars?.args?.[0] as number | undefined)
+      : undefined;
 
   const streak = streakRaw !== undefined ? Number(streakRaw) : 0;
   const lastDay = lastDayRaw !== undefined ? Number(lastDayRaw) : 0;
@@ -114,29 +141,60 @@ export function OnchainProfile() {
                     ? (badges.data[idx].result as boolean)
                     : false;
                 const earned = streak >= m;
+                const pending = pendingMilestone === m;
+
+                if (claimed) {
+                  return (
+                    <span
+                      key={m}
+                      className="px-3 py-1 rounded-full text-[12px] font-mono bg-success-moss/15 text-success-moss border border-success-moss/40"
+                      title="minted"
+                    >
+                      {m}d ✓
+                    </span>
+                  );
+                }
+
+                if (earned) {
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => claim(m)}
+                      disabled={pending || claimSigning || claimMining}
+                      className="px-3 py-1 rounded-full text-[12px] font-mono bg-action-orange/15 text-action-orange border border-action-orange/40 hover:bg-action-orange/25 disabled:opacity-50"
+                      title="Mint your streak badge — soulbound, sticks to this wallet forever."
+                    >
+                      {pending ? `${m}d minting…` : `${m}d — claim →`}
+                    </button>
+                  );
+                }
+
                 return (
                   <span
                     key={m}
-                    className={`px-3 py-1 rounded-full text-[12px] font-mono ${
-                      claimed
-                        ? "bg-success-moss/15 text-success-moss border border-success-moss/40"
-                        : earned
-                          ? "bg-action-orange/15 text-action-orange border border-action-orange/40"
-                          : "bg-fog-gray text-slate-text border border-steel-gray"
-                    }`}
-                    title={
-                      claimed
-                        ? "minted"
-                        : earned
-                          ? "earned — call claimStreakBadge"
-                          : "not yet earned"
-                    }
+                    className="px-3 py-1 rounded-full text-[12px] font-mono bg-fog-gray text-slate-text border border-steel-gray"
+                    title="not yet earned"
                   >
-                    {m}d {claimed ? "✓" : earned ? "→" : ""}
+                    {m}d
                   </span>
                 );
               })}
             </div>
+
+            {claimHash && (
+              <div className="mt-2 flex items-center gap-3 text-[11px] font-mono text-slate-text">
+                <span>
+                  tx <span className="text-ink-blue">{claimHash.slice(0, 10)}…</span>
+                </span>
+                {claimConfirmed && (
+                  <span className="text-success-moss">badge minted ✓</span>
+                )}
+                <button type="button" onClick={() => resetClaim()} className="underline">
+                  reset
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

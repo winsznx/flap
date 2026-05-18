@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { OnchainProfile } from "@/components/OnchainProfile";
 
 interface GameRecord {
   score: number;
@@ -56,6 +57,9 @@ export default function ProfilePage() {
           <h1 className="text-[28px] font-semibold text-ink-blue tracking-[-0.48px]">Your Profile</h1>
           <p className="text-[14px] text-slate-text mt-1">Connect wallet to save progress on-chain</p>
         </div>
+
+        {/* On-chain stats first — permanent record */}
+        <OnchainProfile />
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">

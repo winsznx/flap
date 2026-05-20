@@ -5,6 +5,7 @@ import { FlapEngine, type GameEventType } from "@/game/engine";
 import type { Difficulty } from "@/game/settings";
 import Link from "next/link";
 import { BountyPill } from "@/components/BountyPill";
+import { CancelPlayButton } from "@/components/CancelPlayButton";
 import { ClaimBountyPanel } from "@/components/ClaimBountyPanel";
 import { ConnectButton } from "@/components/ConnectButton";
 import { HopButton } from "@/components/HopButton";
@@ -277,6 +278,14 @@ export default function PlayPage() {
           ▸ Settle
         </h3>
         <SettlePlayButton />
+      </div>
+
+      {/* Cancel a pre-score play to recover the stake */}
+      <div className="w-full max-w-[420px] mt-6">
+        <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
+          ▸ Cancel
+        </h3>
+        <CancelPlayButton />
       </div>
 
       {/* Daily hop retention */}

@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { OnchainProfile } from "@/components/OnchainProfile";
 import { RecentPlays } from "@/components/RecentPlays";
+import { SeasonBadgesPanel } from "@/components/SeasonBadgesPanel";
 
 interface GameRecord {
   score: number;
@@ -71,6 +72,11 @@ export default function ProfilePage() {
             </span>
           </div>
           <RecentPlays />
+        </div>
+
+        {/* Season badges — claim podium + participation per finalized season */}
+        <div className="mb-6">
+          <SeasonBadgesPanel />
         </div>
 
         {/* Stats grid */}

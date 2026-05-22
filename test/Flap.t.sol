@@ -206,6 +206,20 @@ contract FlapTest is Test {
         flap.finalizeDay(day);
     }
 
+    function test_finalizeDay_permissionless() public {
+        uint256 day = flap.today();
+        vm.prank(alex);
+        uint256 id = flap.startPlay(0.1 ether);
+        vm.prank(scorer);
+        flap.submitScore(id, 50);
+        flap.settlePlay(id);
+        vm.warp(block.timestamp + 1 days);
+        // any random address finalises the day — not just owner
+        vm.prank(rio);
+        flap.finalizeDay(day);
+        assertTrue(flap.getDay(day).finalized);
+    }
+
     function test_finalize_then_topPlayer_claims() public {
         uint256 day = flap.today();
         // alex loses

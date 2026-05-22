@@ -286,8 +286,9 @@ contract Flap is ERC721, Ownable, Pausable, ReentrancyGuard {
         emit BountySponsored(day, msg.sender, amount);
     }
 
-    /// @notice Owner finalizes a past day so its bounty becomes claimable.
-    function finalizeDay(uint256 day) external onlyOwner {
+    /// @notice Anyone can finalize a past day so its bounty becomes claimable.
+    ///         Gated by `day < _today()` so future days can't be locked.
+    function finalizeDay(uint256 day) external whenNotPaused {
         DayLedger storage day_ = ledger[day];
         if (day_.finalized) revert Flap__DayAlreadyFinalized();
         if (day >= _today()) revert Flap__DayNotFinalized();

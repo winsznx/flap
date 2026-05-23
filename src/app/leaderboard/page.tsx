@@ -13,7 +13,7 @@ export default function LeaderboardPage() {
   return (
     <main className="min-h-screen bg-ghost-white">
       <Header />
-      <div className="pt-16 sm:pt-20 md:pt-24 pb-16 md:pb-20 max-w-5xl w-full mx-auto px-5 sm:px-6">
+      <div className="pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-20 max-w-5xl w-full mx-auto px-5 sm:px-6">
         <header className="mb-10 md:mb-14">
           <span className="text-[11px] font-mono uppercase tracking-[0.15em]" style={{ color: "var(--color-action-orange)" }}>
             Live · onchain

@@ -10,13 +10,13 @@ import Link from "next/link";
  */
 export function HeroSection() {
   return (
-    <section className="relative pt-28 pb-24 overflow-hidden" style={{ background: 'var(--color-ghost-white)' }}>
+    <section className="relative pt-16 sm:pt-24 md:pt-28 pb-16 md:pb-24 overflow-hidden" style={{ background: 'var(--color-ghost-white)' }}>
       {/* Blueprint grid overlay — per DESIGN.md imagery section */}
       <div className="absolute inset-0 grid-pattern" />
       <div className="absolute inset-0 hero-glow" />
 
-      <div className="relative" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-        <div className="flex flex-col lg:flex-row items-center" style={{ gap: 64 }}>
+      <div className="relative mx-auto w-full px-5 sm:px-6" style={{ maxWidth: 1200 }}>
+        <div className="flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-16">
 
           {/* Left — Copy */}
           <div className="flex-1 text-center lg:text-left stagger">
@@ -28,41 +28,35 @@ export function HeroSection() {
               </span>
             </div>
 
-            {/* Headline — SuisseIntl 48px weight 600, Ink Blue, lineHeight 1.1, letterSpacing -1.44px */}
-            <div>
-              <h1 style={{
-                fontFamily: 'var(--font-suisseintl)',
-                fontSize: 'var(--text-display)',
-                fontWeight: 'var(--font-weight-semibold)',
-                lineHeight: 'var(--leading-display)',
-                letterSpacing: 'var(--tracking-display)',
-                color: 'var(--color-ink-blue)',
-                marginTop: 24,
-                marginBottom: 20,
-              }}>
-                Tap to fly.
-                <br />
-                <span className="gradient-text">Earn cUSD.</span>
-              </h1>
-            </div>
+            {/* Headline — responsive size, Ink Blue */}
+            <h1 className="text-[36px] sm:text-[44px] md:text-[48px]" style={{
+              fontFamily: 'var(--font-suisseintl)',
+              fontWeight: 'var(--font-weight-semibold)',
+              lineHeight: 1.05,
+              letterSpacing: 'var(--tracking-display)',
+              color: 'var(--color-ink-blue)',
+              marginTop: 20,
+              marginBottom: 16,
+            }}>
+              Tap to fly.
+              <br />
+              <span className="gradient-text">Earn cUSD.</span>
+            </h1>
 
-            {/* Subtext — Inter 18px weight 400, Slate Text */}
-            <div>
-              <p style={{
-                fontFamily: 'var(--font-suisseintl)',
-                fontSize: 'var(--text-subheading)',
-                fontWeight: 'var(--font-weight-regular)',
-                lineHeight: 'var(--leading-subheading)',
-                letterSpacing: 'var(--tracking-subheading)',
-                color: 'var(--color-slate-text)',
-                maxWidth: 460,
-                margin: '0 auto',
-                marginBottom: 32,
-              }}>
-                A flappy bird game where every run settles on-chain. Dodge pipes, 
-                collect coins, and win daily stablecoin prizes — all inside MiniPay.
-              </p>
-            </div>
+            {/* Subtext — Inter, Slate Text */}
+            <p className="text-base sm:text-[18px]" style={{
+              fontFamily: 'var(--font-suisseintl)',
+              fontWeight: 'var(--font-weight-regular)',
+              lineHeight: 1.5,
+              letterSpacing: 'var(--tracking-subheading)',
+              color: 'var(--color-slate-text)',
+              maxWidth: 460,
+              margin: '0 auto',
+              marginBottom: 28,
+            }}>
+              A flappy bird game where every run settles on-chain. Dodge pipes,
+              collect coins, and win daily stablecoin prizes — all inside MiniPay.
+            </p>
 
             {/* CTAs — CTA Filled + Secondary Outlined, 24px horizontal spacing */}
             <div>

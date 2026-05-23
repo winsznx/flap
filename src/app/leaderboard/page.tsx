@@ -2,35 +2,57 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { TodayLeaderboard } from "@/components/TodayLeaderboard";
+import { OnchainLeaderboard } from "@/components/OnchainLeaderboard";
 
 export const metadata = {
   title: "Leaderboard — Flap",
-  description: "Today's top pilots on Flap, ranked by on-chain payout from PlaySettled wins.",
+  description: "Top pilots on Flap, ranked by total on-chain actions. The contract is the source of truth.",
 };
 
 export default function LeaderboardPage() {
   return (
     <main className="min-h-screen bg-ghost-white">
       <Header />
-      <div className="pt-24 pb-20 max-w-4xl mx-auto px-6">
-        <header className="mb-10">
-          <span className="text-xs font-mono text-action-orange uppercase tracking-widest">
-            Live · on-chain
+      <div className="pt-16 sm:pt-20 md:pt-24 pb-16 md:pb-20 max-w-5xl w-full mx-auto px-5 sm:px-6">
+        <header className="mb-10 md:mb-14">
+          <span className="text-[11px] font-mono uppercase tracking-[0.15em]" style={{ color: "var(--color-action-orange)" }}>
+            Live · onchain
           </span>
-          <h1 className="text-3xl md:text-4xl font-semibold text-ink-blue mt-2 tracking-tight">
-            Today&apos;s top pilots
+          <h1 className="text-[32px] sm:text-4xl md:text-5xl font-semibold mt-2 tracking-tight" style={{ color: "var(--color-ink-blue)" }}>
+            Top pilots
           </h1>
-          <p className="text-slate-text mt-2 max-w-md">
-            Wins from the most recent PlaySettled events, ranked by payout. Earn a slot here by
-            beating today&apos;s score threshold.
+          <p className="mt-3 max-w-xl text-base sm:text-lg" style={{ color: "var(--color-slate-text)" }}>
+            Ranked by total on-chain actions on the Flap contract — plays opened, scores reported, settlements, daily hops, bounty claims, and badge mints. The contract is the source of truth.
           </p>
         </header>
 
-        <TodayLeaderboard />
+        <section className="mb-14 md:mb-20">
+          <div className="flex items-baseline justify-between mb-4 sm:mb-5">
+            <h2 className="text-xl sm:text-2xl font-semibold" style={{ color: "var(--color-ink-blue)" }}>
+              All-time rankings
+            </h2>
+            <span className="font-mono text-xs uppercase tracking-widest" style={{ color: "var(--color-slate-text)" }}>
+              by total actions
+            </span>
+          </div>
+          <OnchainLeaderboard />
+        </section>
 
-        <div className="mt-10 flex items-center justify-between text-sm text-slate-text">
-          <span className="font-mono text-xs">indexed from the last ~50k blocks</span>
-          <Link href="/play" className="text-action-orange hover:underline font-medium">
+        <section>
+          <div className="flex items-baseline justify-between mb-4 sm:mb-5">
+            <h2 className="text-xl sm:text-2xl font-semibold" style={{ color: "var(--color-ink-blue)" }}>
+              Today&apos;s payouts
+            </h2>
+            <span className="font-mono text-xs uppercase tracking-widest" style={{ color: "var(--color-slate-text)" }}>
+              from PlaySettled wins
+            </span>
+          </div>
+          <TodayLeaderboard />
+        </section>
+
+        <div className="mt-10 flex items-center justify-between text-sm" style={{ color: "var(--color-slate-text)" }}>
+          <span className="font-mono text-xs">contract: 0xf4bf…1c70</span>
+          <Link href="/play" className="font-medium hover:underline" style={{ color: "var(--color-action-orange)" }}>
             Stake & fly →
           </Link>
         </div>

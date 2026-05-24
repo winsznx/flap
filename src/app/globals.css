@@ -14,7 +14,85 @@ html {
 body {
   font-family: var(--font-suisseintl);
   color: var(--color-ink-blue);
-  background: var(--color-ghost-white);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(236, 101, 43, 0.07), transparent 26rem),
+    radial-gradient(circle at 88% 6%, rgba(68, 180, 139, 0.08), transparent 24rem),
+    var(--color-ghost-white);
+  line-height: 1.5;
+}
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 3px solid rgba(236, 101, 43, 0.24);
+  outline-offset: 3px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(236, 101, 43, 0.07), transparent 26rem),
+    radial-gradient(circle at 88% 6%, rgba(68, 180, 139, 0.08), transparent 24rem),
+    var(--color-ghost-white);
+}
+
+.container-page {
+  width: min(100% - 2rem, 1200px);
+  margin-inline: auto;
+}
+
+.container-narrow {
+  width: min(100% - 2rem, 860px);
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(64px, 8vw, 112px);
+}
+
+.eyebrow {
+  color: var(--color-action-orange);
+  font-family: var(--font-suisseintlmono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.display-xl {
+  color: var(--color-ink-blue);
+  font-size: clamp(44px, 7vw, 86px);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.04em;
+  line-height: 0.94;
+}
+
+.display-lg {
+  color: var(--color-ink-blue);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.heading-md {
+  color: var(--color-ink-blue);
+  font-size: clamp(22px, 2.1vw, 30px);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.body-lg {
+  color: var(--color-slate-text);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.58;
+}
+
+.body-sm {
+  color: var(--color-slate-text);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 /* ===== Column Design — Backgrounds ===== */
@@ -63,9 +141,32 @@ body {
   box-shadow: var(--shadow-subtle-3);
 }
 
+.card-surface,
+.surface-panel {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--color-steel-gray);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-subtle);
+}
+
+.card-surface-alt {
+  background: var(--color-fog-gray);
+  border: 1px solid var(--color-steel-gray);
+}
+
+.nav-frame {
+  border: 1px solid rgba(227, 228, 232, 0.9);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 14px 42px rgba(17, 26, 74, 0.09);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
 /* ===== Column Design — Buttons ===== */
 /* Per DESIGN.md: "Emphasize critical actions with Action Orange background" */
 .btn-primary {
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -82,6 +183,7 @@ body {
   text-decoration: none;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(236, 101, 43, 0.25);
+  white-space: nowrap;
 }
 .btn-primary:hover {
   filter: brightness(1.05);
@@ -91,6 +193,7 @@ body {
 
 /* Per DESIGN.md: "Secondary Button - Outlined" — Deep Plum border */
 .btn-secondary {
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -106,6 +209,7 @@ body {
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 .btn-secondary:hover {
   background: var(--color-deep-plum);
@@ -114,6 +218,7 @@ body {
 
 /* Per DESIGN.md: Ghost Button - Light */
 .btn-ghost {
+  min-height: 40px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -128,8 +233,34 @@ body {
   cursor: pointer;
   text-decoration: none;
   transition: color 0.15s ease;
+  white-space: nowrap;
 }
 .btn-ghost:hover { color: var(--color-ink-blue); }
+
+.btn-compact {
+  min-height: 40px;
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.nav-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  color: var(--color-charcoal-text);
+  font-family: var(--font-suisseintl);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  padding: 0 14px;
+  text-decoration: none;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+.nav-link:hover {
+  background: var(--color-ghost-white);
+  color: var(--color-ink-blue);
+  transform: translateY(-1px);
+}
 
 /* ===== Column Design — Badges ===== */
 .badge {

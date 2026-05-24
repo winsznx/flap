@@ -24,8 +24,11 @@ export default function PlayPage() {
 
   // Load high score from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("flap_highscore");
-    if (saved) setHighScore(parseInt(saved, 10));
+    const id = window.setTimeout(() => {
+      const saved = localStorage.getItem("flap_highscore");
+      if (saved) setHighScore(parseInt(saved, 10));
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const handleGameEvent = useCallback(
@@ -106,9 +109,9 @@ export default function PlayPage() {
   }, [handleTap]);
 
   return (
-    <div className="min-h-screen bg-ink-blue flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-ink-blue flex flex-col items-center justify-center p-4 py-8">
       {/* Back nav */}
-      <div className="w-full max-w-[420px] mb-4 flex items-center justify-between gap-3 flex-wrap">
+      <div className="mb-4 flex w-full max-w-[520px] flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/8 p-3 backdrop-blur">
         <Link
           href="/"
           className="text-[14px] text-white/60 hover:text-white transition-colors flex items-center gap-2 no-underline"
@@ -239,17 +242,17 @@ export default function PlayPage() {
       </div>
 
       {/* Bottom info */}
-      <div className="w-full max-w-[420px] mt-4 flex items-center justify-between">
-        <span className="text-[12px] text-white/30 font-mono">
+      <div className="mt-4 flex w-full max-w-[520px] items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+        <span className="text-[12px] text-white/50 font-mono">
           Mode: {difficulty}
         </span>
-        <span className="text-[12px] text-white/30 font-mono">
+        <span className="max-w-[250px] text-right text-[12px] text-white/50 font-mono">
           Free practice — stake below to play for sats-back.
         </span>
       </div>
 
       {/* Onchain stake-and-play */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Stake & play
         </h3>
@@ -257,7 +260,7 @@ export default function PlayPage() {
       </div>
 
       {/* Yesterday's bounty claim */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Bounty
         </h3>
@@ -265,7 +268,7 @@ export default function PlayPage() {
       </div>
 
       {/* Sponsor today's bounty */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Sponsor pool
         </h3>
@@ -273,7 +276,7 @@ export default function PlayPage() {
       </div>
 
       {/* Settle a finished play (permissionless) */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Settle
         </h3>
@@ -281,7 +284,7 @@ export default function PlayPage() {
       </div>
 
       {/* Cancel a pre-score play to recover the stake */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Cancel
         </h3>
@@ -289,7 +292,7 @@ export default function PlayPage() {
       </div>
 
       {/* Daily hop retention */}
-      <div className="w-full max-w-[420px] mt-6">
+      <div className="w-full max-w-[520px] mt-6">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Daily hop
         </h3>

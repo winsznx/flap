@@ -37,16 +37,13 @@ export function TodayLeaderboard() {
   });
 
   useEffect(() => {
-    if (!isFlapDeployed) {
-      setRows(null);
-      return;
-    }
+    if (!isFlapDeployed) return;
 
     let cancelled = false;
-    setErr(null);
 
     (async () => {
       try {
+        setErr(null);
         const client = getPublicClient(config, { chainId });
         if (!client) return;
         const head = await client.getBlockNumber();

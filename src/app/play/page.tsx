@@ -148,8 +148,18 @@ export default function PlayPage() {
         {/* Menu overlay */}
         {gameState === "menu" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink-blue/50 backdrop-blur-sm rounded-2xl">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-white/70 font-mono">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-white/70" />
+              Demo mode · no stake
+            </span>
             <h2 className="text-[32px] font-semibold text-white mb-2 tracking-[-0.8px]">Flap</h2>
-            <p className="text-[14px] text-white/60 mb-8">Tap to fly, earn cUSD</p>
+            <p className="text-[14px] text-white/60 mb-2">Tap to fly. Stake cUSD below to play for real.</p>
+            <a
+              href="#stake-play"
+              className="mb-6 text-[12px] uppercase tracking-[0.12em] text-action-orange hover:underline font-mono"
+            >
+              ↓ Stake & play for real
+            </a>
 
             {/* Difficulty selector */}
             <div className="flex gap-2 mb-8">
@@ -178,7 +188,7 @@ export default function PlayPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              Play — $0.05
+              Play demo
             </button>
 
             {highScore > 0 && (
@@ -252,7 +262,7 @@ export default function PlayPage() {
       </div>
 
       {/* Onchain stake-and-play */}
-      <div className="w-full max-w-[520px] mt-6">
+      <div id="stake-play" className="w-full max-w-[520px] mt-6 scroll-mt-24">
         <h3 className="text-[12px] uppercase tracking-widest text-white/50 font-mono mb-3">
           ▸ Stake & play
         </h3>

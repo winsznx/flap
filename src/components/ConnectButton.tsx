@@ -16,10 +16,10 @@ export function ConnectButton() {
       <button
         type="button"
         onClick={() => disconnect()}
-        className="px-4 py-2 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-900 font-medium transition-colors"
+        className="btn-secondary btn-compact"
         title="Disconnect"
       >
-        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2 align-middle" />
+        <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success-moss)]" />
         {trim(address)}
       </button>
     );
@@ -31,7 +31,7 @@ export function ConnectButton() {
         type="button"
         onClick={() => setOpen(true)}
         disabled={isPending}
-        className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium disabled:opacity-50 transition-colors"
+        className="btn-primary btn-compact disabled:opacity-50"
       >
         Connect wallet
       </button>
@@ -43,13 +43,13 @@ export function ConnectButton() {
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-medium"
+        className="btn-primary btn-compact"
       >
         Pick wallet
       </button>
-      <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-slate-200 rounded-xl shadow-lg p-2 z-50 space-y-1">
+      <div className="absolute right-0 top-full z-50 mt-2 w-60 space-y-1 rounded-xl border border-[var(--color-steel-gray)] bg-white p-2 shadow-xl">
         {connectors.length === 0 ? (
-          <p className="text-xs text-slate-500 p-2">No wallet found.</p>
+          <p className="p-2 text-xs text-[var(--color-slate-text)]">No wallet found.</p>
         ) : (
           connectors.map((c) => (
             <button
@@ -60,7 +60,7 @@ export function ConnectButton() {
                 setOpen(false);
               }}
               disabled={isPending}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-sm text-slate-900 disabled:opacity-50"
+              className="w-full rounded-lg px-3 py-2 text-left text-sm text-[var(--color-ink-blue)] hover:bg-[var(--color-fog-gray)] disabled:opacity-50"
             >
               {c.name}
             </button>

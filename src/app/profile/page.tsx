@@ -20,23 +20,26 @@ export default function ProfilePage() {
   const [totalGames, setTotalGames] = useState(0);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("flap_history");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setHistory(parsed as GameRecord[]);
-          setTotalGames(parsed.length);
+    const id = window.setTimeout(() => {
+      try {
+        const saved = localStorage.getItem("flap_history");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setHistory(parsed as GameRecord[]);
+            setTotalGames(parsed.length);
+          }
         }
+        const hs = localStorage.getItem("flap_highscore");
+        if (hs) {
+          const n = parseInt(hs, 10);
+          if (Number.isFinite(n)) setHighScore(n);
+        }
+      } catch {
+        // localStorage shape is from an older client or got corrupted — fall through to empty.
       }
-      const hs = localStorage.getItem("flap_highscore");
-      if (hs) {
-        const n = parseInt(hs, 10);
-        if (Number.isFinite(n)) setHighScore(n);
-      }
-    } catch {
-      // localStorage shape is from an older client or got corrupted — fall through to empty.
-    }
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const totalCoins = history.reduce((sum, g) => sum + (g.coins || 0), 0);
@@ -45,19 +48,20 @@ export default function ProfilePage() {
     : 0;
 
   return (
-    <main className="min-h-screen bg-ghost-white">
+    <main className="app-shell">
       <Header />
-      <div className="pt-24 pb-20 max-w-[800px] mx-auto px-6">
+      <div className="container-narrow pb-20 pt-36">
         {/* Profile header */}
-        <div className="text-center mb-12">
-          <div className="w-20 h-20 rounded-full bg-fog-gray border-2 border-steel-gray mx-auto mb-4 flex items-center justify-center">
+        <div className="mb-12 text-center">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border border-steel-gray bg-white shadow-sm">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-slate-text)" strokeWidth="1.5">
               <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
-          <h1 className="text-[28px] font-semibold text-ink-blue tracking-[-0.48px]">Your Profile</h1>
-          <p className="text-[14px] text-slate-text mt-1">Connect wallet to save progress on-chain</p>
+          <div className="eyebrow">Player profile</div>
+          <h1 className="mt-2 display-lg">Your Flap record.</h1>
+          <p className="mx-auto mt-3 max-w-xl body-lg">Connect a wallet to pair local game progress with permanent onchain activity.</p>
         </div>
 
         {/* On-chain stats first — permanent record */}
@@ -80,15 +84,14 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
-            { label: "High Score", value: highScore, icon: "🏆" },
-            { label: "Games Played", value: totalGames, icon: "🎮" },
-            { label: "Coins Collected", value: totalCoins, icon: "💰" },
-            { label: "Avg Score", value: avgScore, icon: "📊" },
+            { label: "High Score", value: highScore },
+            { label: "Games Played", value: totalGames },
+            { label: "Coins Collected", value: totalCoins },
+            { label: "Avg Score", value: avgScore },
           ].map((stat) => (
             <div key={stat.label} className="card-surface p-5 text-center">
-              <div className="text-[20px] mb-2">{stat.icon}</div>
               <div className="text-[24px] font-semibold text-ink-blue">{stat.value}</div>
               <div className="text-[11px] text-slate-text mt-1">{stat.label}</div>
             </div>

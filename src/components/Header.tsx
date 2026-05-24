@@ -7,57 +7,42 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '12px 24px 0' }}>
-        <div className="flex items-center justify-between" style={{
-          height: 56,
-          padding: '0 20px',
-          borderRadius: 'var(--radius-xl)',
-          background: 'rgba(255,255,255,0.75)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          border: '1px solid var(--color-steel-gray)',
-          boxShadow: 'var(--shadow-subtle-5)',
-        }}>
-          {/* Logo */}
-          <Link href="/" className="flex items-center no-underline" style={{ gap: 10 }}>
-            <div className="flex items-center justify-center" style={{
-              width: 28, height: 28, borderRadius: 6,
-              background: 'var(--color-action-orange)',
-              boxShadow: '0 1px 3px rgba(236,101,43,0.3)',
-            }}>
-              <span style={{ color: 'white', fontSize: 13, fontWeight: 700 }}>F</span>
+    <header className="fixed inset-x-0 top-3 z-50 px-3">
+      <div className="mx-auto max-w-[1200px]">
+        <div className="nav-frame flex min-h-[72px] items-center justify-between gap-5 px-5 md:px-6">
+          <Link href="/" className="flex min-w-0 items-center gap-3 no-underline" aria-label="Flap home">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-action-orange)] shadow-[0_1px_3px_rgba(236,101,43,0.3)]">
+              <span className="text-[13px] font-bold text-white">F</span>
             </div>
-            <span style={{
-              fontFamily: 'var(--font-suisseintl)', fontSize: 16,
-              fontWeight: 'var(--font-weight-semibold)',
-              color: 'var(--color-ink-blue)',
-              letterSpacing: '-0.02em',
-            }}>Flap</span>
+            <span className="flex min-w-0 flex-col leading-none">
+              <span className="text-[16px] font-semibold tracking-[-0.02em] text-[var(--color-ink-blue)]">
+                Flap
+              </span>
+              <span className="mt-1 hidden max-w-[180px] truncate text-[12px] text-[var(--color-slate-text)] sm:block">
+                Tap-to-earn on Celo
+              </span>
+            </span>
           </Link>
 
-          {/* Desktop nav — Primary Navigation Links per DESIGN.md */}
-          <nav className="hidden md:flex items-center" style={{ gap: 4 }}>
+          <nav className="hidden items-center gap-1 rounded-full bg-[var(--color-fog-gray)] p-1 md:flex">
             {[
               { label: "How It Works", href: "#how-it-works" },
               { label: "Rewards", href: "#rewards" },
               { label: "Leaderboard", href: "#leaderboard" },
             ].map((link) => (
-              <Link key={link.label} href={link.href} className="btn-ghost" style={{ fontSize: 14 }}>
+              <Link key={link.label} href={link.href} className="nav-link">
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right — Ghost + CTA */}
-          <div className="hidden md:flex items-center" style={{ gap: 8 }}>
-            <Link href="/profile" className="btn-ghost" style={{ fontSize: 14 }}>Profile</Link>
-            <Link href="/play" className="btn-primary" style={{ padding: '8px 20px', fontSize: 14 }}>
+          <div className="hidden shrink-0 items-center gap-2 md:flex">
+            <Link href="/profile" className="btn-ghost">Profile</Link>
+            <Link href="/play" className="btn-primary btn-compact">
               Play Now
             </Link>
           </div>
 
-          {/* Mobile toggle */}
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}
             style={{ padding: 8, background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-blue)" strokeWidth="2">
@@ -69,7 +54,7 @@ export function Header() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden flex flex-col" style={{
-            marginTop: 8, padding: 16, borderRadius: 'var(--radius-xl)',
+            marginTop: 10, padding: 16, borderRadius: 'var(--radius-xl)',
             background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(16px)',
             border: '1px solid var(--color-steel-gray)', boxShadow: 'var(--shadow-xl)',
             gap: 4,

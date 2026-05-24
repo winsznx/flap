@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { formatUnits } from "viem";
 import {
   useAccount,
@@ -24,7 +23,6 @@ import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
  */
 export function ClaimBountyPanel() {
   const { address, isConnected } = useAccount();
-  const [phase, setPhase] = useState<"idle" | "claiming">("idle");
 
   const { data: todayIdx } = useReadContract({
     abi: flapAbi,
@@ -57,7 +55,6 @@ export function ClaimBountyPanel() {
 
   function claim() {
     if (yesterdayIdx === undefined) return;
-    setPhase("claiming");
     writeContract({
       abi: flapAbi,
       address: FLAP_ADDRESS,

@@ -46,7 +46,7 @@ export function OnchainLeaderboard() {
     staleTime: 60_000,
   });
 
-  const rows = query.data ?? [];
+  const rows = useMemo(() => query.data ?? [], [query.data]);
   const top = useMemo(() => rows.slice(0, PAGE_SIZE), [rows]);
   const totalActions = useMemo(() => rows.reduce((s, r) => s + r.actions, 0), [rows]);
   const totalVolume = useMemo(() => rows.reduce((s, r) => s + r.valueWei, 0n), [rows]);

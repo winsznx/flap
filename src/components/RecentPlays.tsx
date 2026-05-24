@@ -71,7 +71,7 @@ export function RecentPlays() {
     refetchInterval: 60_000,
   });
 
-  const ids = idsQuery.data ?? [];
+  const ids = useMemo(() => idsQuery.data ?? [], [idsQuery.data]);
 
   const { data: results, refetch } = useReadContracts({
     contracts: ids.map((id) => ({

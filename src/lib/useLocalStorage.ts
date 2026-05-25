@@ -6,12 +6,15 @@ export function useLocalStorage<T>(key: string, fallback: T) {
   const [value, setValue] = useState<T>(fallback);
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(key);
-      if (raw !== null) setValue(JSON.parse(raw) as T);
-    } catch {
-      // malformed payload — keep fallback
-    }
+    const t = window.setTimeout(() => {
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw !== null) setValue(JSON.parse(raw) as T);
+      } catch {
+        // malformed payload — keep fallback
+      }
+    }, 0);
+    return () => window.clearTimeout(t);
   }, [key]);
 
   const update = useCallback(

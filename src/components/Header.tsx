@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { NetworkSelector } from "./NetworkSelector";
+import { ConnectButton } from "./ConnectButton";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,35 +39,42 @@ export function Header() {
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 md:flex">
+            <NetworkSelector />
             <Link href="/profile" className="btn-ghost">Profile</Link>
             <Link href="/play" className="btn-primary btn-compact">
               Play Now
             </Link>
+            <ConnectButton />
           </div>
 
-          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}
-            style={{ padding: 8, background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-blue)" strokeWidth="2">
+          <div className="flex items-center gap-2 md:hidden">
+            <NetworkSelector />
+            <ConnectButton />
+            <button
+              type="button"
+              className="btn-ghost btn-compact"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-blue)" strokeWidth="2">
               {menuOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 8h16M4 16h16" />}
-            </svg>
-          </button>
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden flex flex-col" style={{
-            marginTop: 10, padding: 16, borderRadius: 'var(--radius-xl)',
-            background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(16px)',
-            border: '1px solid var(--color-steel-gray)', boxShadow: 'var(--shadow-xl)',
-            gap: 4,
-          }}>
+          <div className="md:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
             {["How It Works", "Rewards", "Leaderboard"].map((item) => (
               <Link key={item} href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-                className="btn-ghost" style={{ justifyContent: 'flex-start', padding: '12px 12px', fontSize: 15 }}
+                className="btn-ghost"
                 onClick={() => setMenuOpen(false)}>{item}</Link>
             ))}
-            <div style={{ height: 1, background: 'var(--color-steel-gray)', margin: '4px 0' }} />
-            <Link href="/play" className="btn-primary" style={{ textAlign: 'center', marginTop: 4 }}
+            <div className="my-2 h-px bg-[var(--color-steel-gray)]" />
+            <Link
+              href="/play"
+              className="btn-primary"
               onClick={() => setMenuOpen(false)}>Play Now</Link>
           </div>
         )}

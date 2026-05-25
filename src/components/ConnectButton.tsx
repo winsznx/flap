@@ -1,15 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { connectStacks, disconnectStacks, readStacksSession } from "@/chain/stacksSession";
 
 const trim = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 export function ConnectButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const { connectors, connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
   const [open, setOpen] = useState(false);
+  const [stxAddr, setStxAddr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (kind !== "stacks") return;
+    const t = window.setTimeout(() => {
+      const snap = readStacksSession();
+      setStxAddr(snap.address);
+    }, 0);
+    return () => window.clearTimeout(t);
+  }, [kind]);
+
+  const isStacksConnected = useMemo(() => kind === "stacks" && !!stxAddr, [kind, stxAddr]);
+
+  if (kind === "stacks") {
+    if (isStacksConnected && stxAddr) {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            disconnectStacks();
+            setStxAddr(null);
+          }}
+          className="btn-secondary btn-compact"
+          title="Disconnect"
+        >
+          <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success-moss)]" />
+          {trim(stxAddr)}
+        </button>
+      );
+    }
+    return (
+      <button
+        type="button"
+        disabled={isPending}
+        className="btn-primary btn-compact disabled:opacity-50"
+        onClick={async () => {
+          try {
+            await connectStacks();
+          } finally {
+            const snap = readStacksSession();
+            setStxAddr(snap.address);
+          }
+        }}
+      >
+        Connect Stacks
+      </button>
+    );
+  }
 
   if (isConnected && address) {
     return (

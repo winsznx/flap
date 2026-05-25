@@ -20,7 +20,7 @@ export default function LeaderboardError({
             index failure
           </div>
           <h1 className="mt-3 text-2xl font-semibold" style={{ color: "var(--color-ink-blue)" }}>
-            Couldn't aggregate the logs
+            Couldn&apos;t aggregate the logs
           </h1>
           <p className="mt-3 text-sm" style={{ color: "var(--color-slate-text)" }}>
             Forno may be rate-limiting. Refresh in a minute.

@@ -19,7 +19,7 @@ export default function PlayError({
           flight aborted
         </div>
         <h1 className="mt-3 text-2xl font-semibold" style={{ color: "var(--color-ink-blue)" }}>
-          Couldn't boot the canvas
+          Couldn&apos;t boot the canvas
         </h1>
         <p className="mt-3 text-sm" style={{ color: "var(--color-slate-text)" }}>
           The game engine or stake-read errored mid-mount. Reload and reconnect your wallet.

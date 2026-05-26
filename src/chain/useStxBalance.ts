@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useStacksSession } from "./useStacksSession";
 
 const STACKS_API =
-  process.env.NEXT_PUBLIC_STACKS_API ?? "https://api.testnet.hiro.so";
+  process.env.NEXT_PUBLIC_STACKS_API ?? "https://api.hiro.so";
 
 type Result = {
   balanceMicroStx: bigint;

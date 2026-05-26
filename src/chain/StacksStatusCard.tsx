@@ -19,7 +19,7 @@ export function StacksStatusCard() {
     <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5">
       <div className="flex items-center justify-between">
         <span className="text-mono text-[11px] uppercase tracking-[0.15em] text-[var(--text-tertiary)]">
-          Stacks · testnet
+          Stacks mainnet
         </span>
         <span
           aria-hidden

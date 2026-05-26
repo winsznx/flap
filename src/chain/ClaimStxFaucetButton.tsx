@@ -22,7 +22,7 @@ export function ClaimStxFaucetButton({ className = "" }: { className?: string })
     setPending(true);
     setErr(null);
     try {
-      const [{ openContractCall }, { STACKS_TESTNET }] = await Promise.all([
+      const [{ openContractCall }, { STACKS_MAINNET }] = await Promise.all([
         import("@stacks/connect"),
         import("@stacks/network"),
       ]);
@@ -31,7 +31,7 @@ export function ClaimStxFaucetButton({ className = "" }: { className?: string })
         throw new Error("FAUCET_CONTRACT must be 'address.name'");
       }
       await openContractCall({
-        network: STACKS_TESTNET,
+        network: STACKS_MAINNET,
         contractAddress,
         contractName,
         functionName: "claim",

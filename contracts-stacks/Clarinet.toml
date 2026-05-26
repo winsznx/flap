@@ -1,0 +1,26 @@
+[project]
+name = "flap-stacks"
+description = "Flap — daily stake-to-play arcade on Stacks"
+authors = []
+telemetry = false
+cache_dir = "./.cache"
+
+[contracts.flap]
+path = "flap.clar"
+clarity_version = 3
+epoch = 3.0
+
+[contracts.stx-faucet]
+path = "stx-faucet.clar"
+clarity_version = 3
+epoch = 3.0
+
+[contracts.flap-badges]
+path = "flap-badges.clar"
+clarity_version = 3
+epoch = 3.0
+
+[contracts.flap-hop]
+path = "flap-hop.clar"
+clarity_version = 3
+epoch = 3.0

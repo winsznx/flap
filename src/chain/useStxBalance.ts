@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useStacksSession } from "./useStacksSession";
 
-const STACKS_API =
-  process.env.NEXT_PUBLIC_STACKS_API ?? "https://api.hiro.so";
+const STACKS_API = process.env.NEXT_PUBLIC_STACKS_API ?? "https://api.hiro.so";
 
 type Result = {
   balanceMicroStx: bigint;
@@ -13,8 +12,8 @@ type Result = {
 };
 
 /**
- * Pull the connected wallet's STX balance from the Hiro API. Defaults to
- * testnet so the dApp doesn't need mainnet STX for the demo flow.
+ * STX balance via Hiro's v2 endpoint:
+ *   /extended/v2/addresses/{addr}/balances/stx -> { balance, locked, ... }
  */
 export function useStxBalance(): Result {
   const { address, isConnected } = useStacksSession();
@@ -32,12 +31,15 @@ export function useStxBalance(): Result {
     let cancelled = false;
     setState((s) => ({ ...s, loading: true, error: null }));
 
-    fetch(`${STACKS_API}/extended/v1/address/${address}/balances`)
+    fetch(`${STACKS_API}/extended/v2/addresses/${address}/balances/stx`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((data: { stx?: { balance?: string } }) => {
+      .then((data: { balance?: string }) => {
         if (cancelled) return;
-        const raw = data.stx?.balance ?? "0";
-        setState({ balanceMicroStx: BigInt(raw), loading: false, error: null });
+        setState({
+          balanceMicroStx: BigInt(data.balance ?? "0"),
+          loading: false,
+          error: null,
+        });
       })
       .catch((err: unknown) => {
         if (cancelled) return;

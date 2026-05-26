@@ -1,4 +1,4 @@
-;; flap-hop — permissionless daily hop counter. Mirrors dailyHop() on the
+;; flap-hop - permissionless daily hop counter. Mirrors dailyHop() on the
 ;; EVM build: streak increments while cooldown is met within grace, resets
 ;; otherwise. Used by the client to award daily hop credits.
 
@@ -16,11 +16,11 @@
         (run (default-to u0 (map-get? hop-run tx-sender)))
         (next-allowed (+ last (var-get cooldown-blocks)))
         (grace-end (+ last (+ (var-get cooldown-blocks) (var-get grace-blocks)))))
-    (asserts! (or (is-eq last u0) (>= block-height next-allowed)) ERR-TOO-SOON)
-    (let ((next-run (if (or (is-eq last u0) (> block-height grace-end)) u1 (+ run u1))))
+    (asserts! (or (is-eq last u0) (>= stacks-block-height next-allowed)) ERR-TOO-SOON)
+    (let ((next-run (if (or (is-eq last u0) (> stacks-block-height grace-end)) u1 (+ run u1))))
       (let ((reward (if (is-eq (mod next-run u30) u0) u20
                       (if (is-eq (mod next-run u7) u0) u5 u1))))
-        (map-set last-hop tx-sender block-height)
+        (map-set last-hop tx-sender stacks-block-height)
         (map-set hop-run tx-sender next-run)
         (map-set hop-credits tx-sender (+ (default-to u0 (map-get? hop-credits tx-sender)) reward))
         (print { event: "hopped", who: tx-sender, run: next-run, reward: reward })

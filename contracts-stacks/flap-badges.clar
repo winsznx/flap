@@ -1,4 +1,4 @@
-;; flap-badges — podium + participation + streak NFTs for the daily bounty.
+;; flap-badges - podium + participation + streak NFTs for the daily bounty.
 ;; All three mint paths are permissionless; the contract simply mints based
 ;; on the parameters provided.
 

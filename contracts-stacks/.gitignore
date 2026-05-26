@@ -1,0 +1,3 @@
+# never commit clarinet settings — they contain dev mnemonics + balances
+settings/
+.cache/

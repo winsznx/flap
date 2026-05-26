@@ -1,4 +1,4 @@
-;; stx-faucet — permissionless STX drip for testnet/mainnet onboarding.
+;; stx-faucet - permissionless STX drip for testnet/mainnet onboarding.
 ;; Anyone can claim once per cooldown window. No owner gating except for
 ;; the rotateable maintainer who can top up + adjust amounts.
 
@@ -19,10 +19,10 @@
   (let ((last (default-to u0 (map-get? last-claim tx-sender)))
         (amount (var-get claim-amount))
         (next-allowed (+ last (var-get cooldown-blocks))))
-    (asserts! (or (is-eq last u0) (>= block-height next-allowed)) ERR-TOO-SOON)
+    (asserts! (or (is-eq last u0) (>= stacks-block-height next-allowed)) ERR-TOO-SOON)
     (asserts! (>= (stx-get-balance (as-contract tx-sender)) amount) ERR-EMPTY)
     (try! (as-contract (stx-transfer? amount tx-sender tx-sender)))
-    (map-set last-claim tx-sender block-height)
+    (map-set last-claim tx-sender stacks-block-height)
     (var-set total-claims (+ (var-get total-claims) u1))
     (print { event: "claimed", who: tx-sender, amount: amount })
     (ok amount)))

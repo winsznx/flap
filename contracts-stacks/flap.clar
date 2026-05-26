@@ -1,8 +1,6 @@
-;; Flap — Stacks/Clarity port (draft)
+;; Flap - Stacks/Clarity port (draft)
 ;; Stake-to-play arcade: escrow stake on startPlay, scorer reports, settlePlay
-;; pays 2× on a win or routes the stake to the daily bounty pool.
-
-(use-trait ft-trait .sip-010-trait.sip-010-trait)
+;; pays 2x on a win or routes the stake to the daily bounty pool.
 
 (define-constant ERR-NOT-SCORER (err u400))
 (define-constant ERR-ALREADY-SCORED (err u401))
@@ -29,7 +27,7 @@
 
 (define-public (start-play (stake uint))
   (let ((id (var-get next-play-id))
-        (today (/ block-height u144))) ;; ~144 blocks ≈ 1 day on Stacks
+        (today (/ stacks-block-height u144))) ;; ~144 blocks ~ 1 day on Stacks
     (asserts! (> stake u0) ERR-ZERO-STAKE)
     ;; TODO: SIP-010 transfer stake from tx-sender
     (map-set plays id
@@ -46,12 +44,12 @@
       (map-set plays play-id (merge p { score: score, status: u1 }))
       (ok true))))
 
-;; TODO: settle-play — pay 2x on >threshold, route to bounty-pool otherwise
-;; TODO: claim-daily-bounty — split pool among day's stakers proportional to stake
-;; TODO: cancel-play — escape hatch when scorer never reports
+;; TODO: settle-play - pay 2x on >threshold, route to bounty-pool otherwise
+;; TODO: claim-daily-bounty - split pool among day's stakers proportional to stake
+;; TODO: cancel-play - escape hatch when scorer never reports
 
 (define-read-only (get-play (id uint))
   (map-get? plays id))
 
 (define-read-only (today)
-  (/ block-height u144))
+  (/ stacks-block-height u144))

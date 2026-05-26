@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useStacksSession } from "./useStacksSession";
 
 const FAUCET_CONTRACT =
-  process.env.NEXT_PUBLIC_STACKS_FAUCET_CONTRACT ?? "SP000000000000000000002Q6VF78.stx-faucet";
+  process.env.NEXT_PUBLIC_STACKS_FAUCET_CONTRACT ?? "SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.stx-faucet";
 
 /**
  * Calls the stx-faucet `claim` function via @stacks/connect v8's `request`

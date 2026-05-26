@@ -1,21 +1,16 @@
 "use client";
 
+/**
+ * v8 wrapper. Uses the new `connect()` / `disconnect()` / `isConnected()` /
+ * `getLocalStorage()` surface so we don't have to keep an `AppConfig` +
+ * `UserSession` instance around.
+ */
 type ConnectModule = typeof import("@stacks/connect");
 
-let _connect: Promise<ConnectModule> | null = null;
-let _userSession: import("@stacks/connect").UserSession | null = null;
-
-async function connectModule(): Promise<ConnectModule> {
-  if (!_connect) _connect = import("@stacks/connect");
-  return _connect;
-}
-
-async function userSession(): Promise<import("@stacks/connect").UserSession> {
-  if (_userSession) return _userSession;
-  const { AppConfig, UserSession } = await connectModule();
-  const appConfig = new AppConfig(["store_write", "publish_data"]);
-  _userSession = new UserSession({ appConfig });
-  return _userSession;
+let _mod: Promise<ConnectModule> | null = null;
+function getMod(): Promise<ConnectModule> {
+  if (!_mod) _mod = import("@stacks/connect");
+  return _mod;
 }
 
 export type StacksSessionState = {
@@ -24,38 +19,34 @@ export type StacksSessionState = {
 };
 
 export function readStacksSession(): StacksSessionState {
-  if (typeof window === "undefined" || !_userSession) return { isConnected: false, address: null };
-  if (!_userSession.isUserSignedIn()) return { isConnected: false, address: null };
-  const data = _userSession.loadUserData();
-  const addr =
-    data.profile?.stxAddress?.mainnet ??
-    data.profile?.stxAddress?.testnet ??
-    null;
-  return { isConnected: true, address: addr };
+  if (typeof window === "undefined") return { isConnected: false, address: null };
+  try {
+    const raw = window.localStorage.getItem("blockstack-session");
+    if (!raw) return { isConnected: false, address: null };
+    const data: { addresses?: { stx?: { address?: string }[] } } = JSON.parse(raw);
+    const stx = data.addresses?.stx?.[0]?.address;
+    if (stx) return { isConnected: true, address: stx };
+  } catch {
+    /* ignore */
+  }
+  return { isConnected: false, address: null };
 }
 
 export async function connectStacks(): Promise<void> {
-  const session = await userSession();
-  if (session.isUserSignedIn()) return;
-  const { showConnect } = await connectModule();
-  await new Promise<void>((resolve, reject) => {
-    showConnect({
-      userSession: session,
-      appDetails: {
-        name: "Flap",
-        icon: `${window.location.origin}/icon.png`,
-      },
-      onFinish: () => resolve(),
-      onCancel: () => reject(new Error("connect cancelled")),
-    });
-  });
+  const mod = await getMod();
+  await mod.connect();
 }
 
-export function disconnectStacks(): void {
+export async function disconnectStacks(): Promise<void> {
+  const mod = await getMod();
   try {
-    _userSession?.signUserOut(window.location.origin);
+    mod.disconnect();
   } catch {
-    // ignore
+    /* best effort */
+  }
+  try {
+    window.localStorage.removeItem("blockstack-session");
+  } catch {
+    /* ignore */
   }
 }
-

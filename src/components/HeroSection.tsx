@@ -16,16 +16,16 @@ export function HeroSection() {
                 className="h-1.5 w-1.5 rounded-full animate-pulse-dot"
                 style={{ background: "var(--color-success-moss)" }}
               />
-              Live on Celo
+              Live on Celo + Stacks
             </span>
-            <span className="badge badge-subtle">MiniPay native</span>
+            <span className="badge badge-subtle">MiniPay + Leather native</span>
             <span className="badge badge-subtle">Instant settlement</span>
           </div>
 
           <h1 className="display-xl">
             Tap to fly.
             <br />
-            <span className="gradient-text">Earn cUSD.</span>
+            <span className="gradient-text">Earn cUSD or STX.</span>
           </h1>
 
           <p className="mt-6 max-w-2xl body-lg">

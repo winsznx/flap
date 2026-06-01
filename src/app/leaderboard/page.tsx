@@ -6,7 +6,7 @@ import { OnchainLeaderboard } from "@/components/OnchainLeaderboard";
 
 export const metadata = {
   title: "Leaderboard — Flap",
-  description: "Top pilots on Flap, ranked by total on-chain actions. The contract is the source of truth.",
+  description: "Top pilots on Flap, ranked by total on-chain actions on Celo and Stacks. The contracts are the source of truth.",
 };
 
 export default function LeaderboardPage() {
@@ -18,7 +18,7 @@ export default function LeaderboardPage() {
           <span className="eyebrow">Live · onchain</span>
           <h1 className="mt-3 display-lg">Top pilots</h1>
           <p className="mt-4 max-w-2xl body-lg">
-            Ranked by total on-chain actions on the Flap contract — plays opened, scores reported, settlements, daily hops, bounty claims, and badge mints. The contract is the source of truth.
+            Ranked by total on-chain actions on the Flap contracts — plays opened, scores reported, settlements, daily hops, bounty claims, and badge mints. Toggle Celo (cUSD) or Stacks (STX) to switch the source chain.
           </p>
         </header>
 
@@ -39,7 +39,7 @@ export default function LeaderboardPage() {
         </section>
 
         <div className="mt-10 flex items-center justify-between text-sm text-slate-text">
-          <span className="font-mono text-xs">contract: 0xf4bf...1c70</span>
+          <span className="font-mono text-xs">celo 0xf4bf…1c70 · stacks SP31…WYV.flap</span>
           <Link href="/play" className="btn-primary btn-compact">
             Stake & fly
           </Link>

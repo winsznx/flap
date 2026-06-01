@@ -8,19 +8,19 @@ export function HowItWorks() {
     {
       step: "01",
       title: "Connect Wallet",
-      desc: "Open Flap in MiniPay or connect any Celo-compatible wallet. No seed phrases needed.",
+      desc: "Open Flap in MiniPay or any Celo-compatible wallet, or connect Leather/Xverse for Stacks. No seed phrases needed.",
       icon: "M21 12V7H5a2 2 0 010-4h14v4M3 5v14a2 2 0 002 2h16v-5M18 12a1 1 0 100 2 1 1 0 000-2z",
     },
     {
       step: "02",
       title: "Tap to Play",
-      desc: "Each game costs $0.05 cUSD — or use a free credit from daily check-ins. Tap to flap, dodge pipes.",
+      desc: "Each game costs $0.05 — paid in cUSD on Celo or STX on Stacks. Or use a free credit from daily check-ins.",
       icon: "M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z",
     },
     {
       step: "03",
       title: "Score On-Chain",
-      desc: "Your score is attested by our backend signer and recorded on Celo. Every result is verifiable on Celoscan.",
+      desc: "Your score is attested by our backend signer and recorded onchain — Celo or Stacks. Every result is verifiable on Celoscan or Hiro explorer.",
       icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
     },
     {
@@ -61,7 +61,7 @@ export function HowItWorks() {
             maxWidth: 440,
             margin: '0 auto',
             lineHeight: 1.5,
-          }}>No complex setup. Connect, play, and earn — all transactions settle on Celo in under 5 seconds.</p>
+          }}>No complex setup. Connect, play, and earn — transactions settle in seconds on either Celo or Stacks.</p>
         </div>
 
         {/* Cards grid */}

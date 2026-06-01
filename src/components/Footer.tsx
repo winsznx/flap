@@ -21,7 +21,7 @@ export function Footer() {
               <span style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 16, fontWeight: 'var(--font-weight-semibold)' }}>Flap</span>
             </div>
             <p style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, maxWidth: 300 }}>
-              A flappy bird game on Celo where every run counts. Built for MiniPay, powered by cUSD.
+              A flappy bird arcade where every run counts — staked in cUSD on Celo or STX on Stacks. Built for MiniPay, Leather, and any wallet.
             </p>
           </div>
 
@@ -47,7 +47,7 @@ export function Footer() {
           <div>
             <h4 style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 11, fontWeight: 'var(--font-weight-medium)', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>Verify</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {["Contract on Celoscan", "Source on GitHub", "Sourcify Verification"].map((label) => (
+              {["Celo contract (Celoscan)", "Stacks contract (Hiro)", "Source on GitHub"].map((label) => (
                 <a key={label} href="#" style={{
                   fontFamily: 'var(--font-suisseintl)', fontSize: 14, color: 'rgba(255,255,255,0.6)',
                   textDecoration: 'none',
@@ -60,10 +60,10 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between" style={{ paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.08)', gap: 12 }}>
           <span style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
-            © 2026 Flap. Built on Celo. Open source.
+            © 2026 Flap. Built on Celo + Stacks. Open source.
           </span>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
-            Celo Mainnet · Chain ID 42220
+            Celo (42220) · Stacks mainnet
           </span>
         </div>
       </div>

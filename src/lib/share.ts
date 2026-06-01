@@ -2,7 +2,7 @@ export const SHARE_HOST = "https://flap.timjosh507.workers.dev";
 
 export function shareText(score?: number): string {
   if (typeof score === "number") return `Flap · score ${score}. Beat it →`;
-  return "Just flapped on Celo. Daily bounty up for grabs →";
+  return "Just flapped onchain — Celo + Stacks. Daily bounty up for grabs →";
 }
 
 export const whatsAppLink = (text: string, url: string) =>

@@ -153,7 +153,7 @@ export default function PlayPage() {
               Demo mode · no stake
             </span>
             <h2 className="text-[32px] font-semibold text-white mb-2 tracking-[-0.8px]">Flap</h2>
-            <p className="text-[14px] text-white/60 mb-2">Tap to fly. Stake cUSD below to play for real.</p>
+            <p className="text-[14px] text-white/60 mb-2">Tap to fly. Stake cUSD on Celo or STX on Stacks below to play for real.</p>
             <a
               href="#stake-play"
               className="mb-6 text-[12px] uppercase tracking-[0.12em] text-action-orange hover:underline font-mono"

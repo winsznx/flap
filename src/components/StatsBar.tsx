@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const stats = [
   { label: "Games Played", value: 0, icon: "🎮" },
-  { label: "cUSD Won", value: 0, prefix: "$", icon: "💰" },
+  { label: "Prize value won", value: 0, prefix: "$", icon: "💰" },
   { label: "Active Players", value: 0, icon: "👥" },
   { label: "Prize Pool", value: 0, prefix: "$", icon: "🏆" },
 ];

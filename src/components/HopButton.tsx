@@ -2,14 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { connectStacks, readStacksSession } from "@/chain/stacksSession";
+import { useStacksWrite } from "@/chain/useStacksWrite";
+import {
+  FLAP_STX_DAILY_HOP_FN,
+  FLAP_STX_DEPLOYER,
+  FLAP_STX_HOP_CONTRACT,
+} from "@/chain/stacksContracts";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
 const COOLDOWN_SEC = 21 * 60 * 60; // Flap.HOP_COOLDOWN
 
 export function HopButton() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [nowSec, setNowSec] = useState(0);
+  const [stxConnected, setStxConnected] = useState(false);
+  const stx = useStacksWrite();
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
@@ -20,12 +31,20 @@ export function HopButton() {
     };
   }, []);
 
+  useEffect(() => {
+    if (kind !== "stacks") return;
+    setStxConnected(readStacksSession().isConnected);
+  }, [kind]);
+
   const { data: last } = useReadContract({
     abi: flapAbi,
     address: FLAP_ADDRESS,
     functionName: "lastHop",
     args: address ? [address] : undefined,
-    query: { enabled: isConnected && isFlapDeployed && !!address, refetchInterval: 60_000 },
+    query: {
+      enabled: kind === "celo" && isConnected && isFlapDeployed && !!address,
+      refetchInterval: 60_000,
+    },
   });
 
   const { data: run } = useReadContract({
@@ -33,7 +52,10 @@ export function HopButton() {
     address: FLAP_ADDRESS,
     functionName: "hopRun",
     args: address ? [address] : undefined,
-    query: { enabled: isConnected && isFlapDeployed && !!address, refetchInterval: 60_000 },
+    query: {
+      enabled: kind === "celo" && isConnected && isFlapDeployed && !!address,
+      refetchInterval: 60_000,
+    },
   });
 
   const { writeContract, data: hash, isPending } = useWriteContract();
@@ -41,21 +63,39 @@ export function HopButton() {
 
   const lastTs = typeof last === "bigint" ? Number(last) : 0;
   const secondsLeft = lastTs === 0 ? 0 : Math.max(0, lastTs + COOLDOWN_SEC - nowSec);
-  const onCooldown = secondsLeft > 0;
+  const onCooldown = kind === "celo" && secondsLeft > 0;
   const runVal = run !== undefined ? Number(run) : 0;
 
-  const canSubmit = isConnected && isFlapDeployed && !onCooldown && !mining && !isPending;
+  const canSubmitCelo =
+    kind === "celo" && isConnected && isFlapDeployed && !onCooldown && !mining && !isPending;
+  const canSubmitStacks = kind === "stacks" && !stx.pending;
+  const canSubmit = kind === "celo" ? canSubmitCelo : canSubmitStacks;
 
-  function submit() {
-    writeContract({
-      abi: flapAbi,
-      address: FLAP_ADDRESS,
-      functionName: "dailyHop",
+  async function submit() {
+    if (kind === "celo") {
+      writeContract({
+        abi: flapAbi,
+        address: FLAP_ADDRESS,
+        functionName: "dailyHop",
+        args: [],
+      });
+      return;
+    }
+    let s = readStacksSession();
+    if (!s.isConnected) {
+      s = await connectStacks();
+      setStxConnected(s.isConnected);
+      if (!s.isConnected) return;
+    }
+    await stx.call({
+      contractAddress: FLAP_STX_DEPLOYER,
+      contractName: FLAP_STX_HOP_CONTRACT,
+      functionName: FLAP_STX_DAILY_HOP_FN,
       args: [],
     });
   }
 
-  const cta = mining
+  const ctaCelo = mining
     ? "Hopping…"
     : isPending
       ? "Sign…"
@@ -68,6 +108,16 @@ export function HopButton() {
             : !isFlapDeployed
               ? "Contract offline"
               : "Daily hop →";
+
+  const ctaStacks = stx.pending
+    ? "Sign in wallet…"
+    : stx.txid
+      ? "Hopped on Stacks ✓"
+      : stxConnected
+        ? "Daily hop →"
+        : "Connect Stacks to hop";
+
+  const cta = kind === "celo" ? ctaCelo : ctaStacks;
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex items-center justify-between gap-3">

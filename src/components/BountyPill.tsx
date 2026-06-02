@@ -2,19 +2,24 @@
 
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
 /**
  * Live read of today's bounty pool. Shown in the play header so players can
- * see what they're chasing.
+ * see what they're chasing. Stacks today doesn't carry a daily bounty pool
+ * (only daily-hop + start-play landed), so we render a neutral pill.
  */
 export function BountyPill() {
+  const { kind } = useChainKind();
+  const onCelo = kind === "celo";
+
   const { data: today } = useReadContract({
     abi: flapAbi,
     address: FLAP_ADDRESS,
     functionName: "today",
-    query: { enabled: isFlapDeployed, refetchInterval: 60_000 },
+    query: { enabled: onCelo && isFlapDeployed, refetchInterval: 60_000 },
   });
 
   const { data: ledger } = useReadContract({
@@ -22,8 +27,19 @@ export function BountyPill() {
     address: FLAP_ADDRESS,
     functionName: "getDay",
     args: today ? [today] : undefined,
-    query: { enabled: isFlapDeployed && today !== undefined, refetchInterval: 30_000 },
+    query: {
+      enabled: onCelo && isFlapDeployed && today !== undefined,
+      refetchInterval: 30_000,
+    },
   });
+
+  if (!onCelo) {
+    return (
+      <div className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">
+        Bounty pool: Celo only
+      </div>
+    );
+  }
 
   if (!isFlapDeployed) {
     return (

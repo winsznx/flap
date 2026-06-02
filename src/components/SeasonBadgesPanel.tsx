@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -22,6 +24,9 @@ const PARTICIPATION_THRESHOLD = 5;
  * row tips over to a ✓ chip and the button disables.
  */
 export function SeasonBadgesPanel() {
+  const { kind } = useChainKind();
+  if (kind === "stacks") return <CeloOnlyNotice feature="Season Badges" />;
+
   const { address, isConnected } = useAccount();
   const [seasonId, setSeasonId] = useState("");
 

@@ -87,12 +87,19 @@ export function HopButton() {
       setStxConnected(s.isConnected);
       if (!s.isConnected) return;
     }
-    await stx.call({
+    const res = await stx.call({
       contractAddress: FLAP_STX_DEPLOYER,
       contractName: FLAP_STX_HOP_CONTRACT,
       functionName: FLAP_STX_DAILY_HOP_FN,
       args: [],
     });
+    if (res) {
+      try {
+        window.localStorage.setItem("flap.hop.lastStx", String(Date.now()));
+      } catch {
+        /* ignore */
+      }
+    }
   }
 
   const ctaCelo = mining
@@ -109,13 +116,33 @@ export function HopButton() {
               ? "Contract offline"
               : "Daily hop →";
 
+  // Read the last-hop timestamp we stamped after a successful Stacks call to
+  // surface a local cooldown UI between visits. The contract enforces the
+  // real cooldown server-side; this just stops the user from spamming the
+  // wallet popup when they just hopped seconds ago.
+  let stacksCooldownLabel: string | null = null;
+  if (typeof window !== "undefined" && kind === "stacks") {
+    try {
+      const raw = window.localStorage.getItem("flap.hop.lastStx");
+      if (raw) {
+        const last = Number(raw);
+        const remaining = COOLDOWN_SEC - Math.floor((Date.now() - last) / 1000);
+        if (remaining > 0) stacksCooldownLabel = fmt(remaining);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
   const ctaStacks = stx.pending
     ? "Sign in wallet…"
     : stx.txid
       ? "Hopped on Stacks ✓"
-      : stxConnected
-        ? "Daily hop →"
-        : "Connect Stacks to hop";
+      : stacksCooldownLabel
+        ? stacksCooldownLabel
+        : stxConnected
+          ? "Daily hop →"
+          : "Connect Stacks to hop";
 
   const cta = kind === "celo" ? ctaCelo : ctaStacks;
 

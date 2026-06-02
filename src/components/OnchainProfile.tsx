@@ -7,6 +7,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -20,7 +22,12 @@ const STREAK_MILESTONES = [7, 14, 30, 100] as const;
  * permanent on-chain progress in one place.
  */
 export function OnchainProfile() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Onchain profile stats" />;
+  }
 
   const enabled = isConnected && isFlapDeployed && !!address;
 

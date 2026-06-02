@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -27,6 +29,9 @@ type PlayTuple = readonly [
  * doesn't sign a doomed tx.
  */
 export function CancelPlayButton() {
+  const { kind } = useChainKind();
+  if (kind === "stacks") return <CeloOnlyNotice feature="Cancel Play" />;
+
   const { address, isConnected } = useAccount();
   const [playId, setPlayId] = useState("");
 

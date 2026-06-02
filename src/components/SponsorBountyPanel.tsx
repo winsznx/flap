@@ -8,6 +8,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { CUSD_ADDRESS, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -19,6 +21,9 @@ const PRESETS = [1, 5, 10, 25];
  * skips the approve when allowance already covers.
  */
 export function SponsorBountyPanel() {
+  const { kind } = useChainKind();
+  if (kind === "stacks") return <CeloOnlyNotice feature="Sponsor Bounty" />;
+
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState<number>(5);
   const [phase, setPhase] = useState<"idle" | "approving" | "sponsoring">("idle");

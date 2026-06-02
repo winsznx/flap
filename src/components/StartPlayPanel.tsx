@@ -8,6 +8,14 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { connectStacks, readStacksSession } from "@/chain/stacksSession";
+import { useStacksWrite } from "@/chain/useStacksWrite";
+import {
+  FLAP_STX_CONTRACT,
+  FLAP_STX_DEPLOYER,
+  FLAP_STX_START_PLAY_FN,
+} from "@/chain/stacksContracts";
 import { flapAbi } from "@/lib/abi/flap";
 import { CUSD_ADDRESS, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -20,10 +28,12 @@ const STAKE_PRESETS = [0.05, 0.1, 0.25, 0.5];
  * scorer key.
  */
 export function StartPlayPanel() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [stake, setStake] = useState<number>(0.1);
   const [phase, setPhase] = useState<"idle" | "approving" | "starting">("idle");
   const stakeWei = parseUnits(stake.toString(), 18);
+  const stx = useStacksWrite();
 
   const { data: allowance } = useReadContract({
     abi: erc20Abi,
@@ -36,37 +46,61 @@ export function StartPlayPanel() {
   const { writeContract, data: hash, reset, isPending } = useWriteContract();
   const { isLoading: mining, data: receipt } = useWaitForTransactionReceipt({ hash });
 
-  const needsApprove = !allowance || (allowance as bigint) < stakeWei;
-  const enabled = isConnected && isFlapDeployed && !mining && !isPending;
+  const needsApprove = kind === "celo" && (!allowance || (allowance as bigint) < stakeWei);
+  const enabledCelo = isConnected && isFlapDeployed && !mining && !isPending;
+  const enabledStacks = !stx.pending;
+  const enabled = kind === "celo" ? enabledCelo : enabledStacks;
 
-  function start() {
-    if (!isConnected) return;
-    if (needsApprove) {
-      setPhase("approving");
+  async function start() {
+    if (kind === "celo") {
+      if (!isConnected) return;
+      if (needsApprove) {
+        setPhase("approving");
+        writeContract({
+          abi: erc20Abi,
+          address: CUSD_ADDRESS,
+          functionName: "approve",
+          args: [FLAP_ADDRESS, stakeWei],
+        });
+        return;
+      }
+      setPhase("starting");
       writeContract({
-        abi: erc20Abi,
-        address: CUSD_ADDRESS,
-        functionName: "approve",
-        args: [FLAP_ADDRESS, stakeWei],
+        abi: flapAbi,
+        address: FLAP_ADDRESS,
+        functionName: "startPlay",
+        args: [stakeWei],
       });
       return;
     }
-    setPhase("starting");
-    writeContract({
-      abi: flapAbi,
-      address: FLAP_ADDRESS,
-      functionName: "startPlay",
-      args: [stakeWei],
+
+    let s = readStacksSession();
+    if (!s.isConnected) {
+      s = await connectStacks();
+      if (!s.isConnected) return;
+    }
+    const stakeMicroStx = BigInt(Math.floor(stake * 1_000_000));
+    await stx.call({
+      contractAddress: FLAP_STX_DEPLOYER,
+      contractName: FLAP_STX_CONTRACT,
+      functionName: FLAP_STX_START_PLAY_FN,
+      args: [{ type: "uint", value: stakeMicroStx }],
     });
   }
 
-  const cta = mining
+  const ctaCelo = mining
     ? phase === "approving"
       ? "Approving stake…"
       : "Opening play…"
     : needsApprove
       ? `Approve $${stake} cUSD`
       : `Stake $${stake} & fly →`;
+  const ctaStacks = stx.pending
+    ? "Sign on Stacks…"
+    : stx.txid
+      ? "Play opened ✓"
+      : `Stake ${stake} STX & fly →`;
+  const cta = kind === "celo" ? ctaCelo : ctaStacks;
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">

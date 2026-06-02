@@ -11,6 +11,8 @@ import {
 } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { useQuery } from "@tanstack/react-query";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -33,9 +35,14 @@ const STATE_LABEL = ["None", "Open", "Settled", "Cancelled"] as const;
  * player is the one most motivated.
  */
 export function RecentPlays() {
+  const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const config = useConfig();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Recent plays index" />;
+  }
 
   const idsQuery = useQuery({
     queryKey: ["flap-recent-plays", chainId, address],

@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -11,6 +13,9 @@ import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
  * `state === Open && score > 0`.
  */
 export function SettlePlayButton() {
+  const { kind } = useChainKind();
+  if (kind === "stacks") return <CeloOnlyNotice feature="Settle Play" />;
+
   const [input, setInput] = useState("");
 
   const playId = useMemo(() => {

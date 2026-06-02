@@ -7,6 +7,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useChainKind } from "@/chain/ChainProvider";
+import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
@@ -22,6 +24,9 @@ import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
  * Anyone can pull this view; only the top scorer can submit `claimDailyBounty`.
  */
 export function ClaimBountyPanel() {
+  const { kind } = useChainKind();
+  if (kind === "stacks") return <CeloOnlyNotice feature="Claim Bounty" />;
+
   const { address, isConnected } = useAccount();
 
   const { data: todayIdx } = useReadContract({

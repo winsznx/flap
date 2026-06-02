@@ -1,12 +1,11 @@
 "use client";
 
 /**
- * Stacks wallet session. Uses @stacks/connect v8 dynamically so the package
- * only lands in the browser chunk that needs it — keeps the Cloudflare worker
- * server bundle clean and under the 3 MiB cap.
+ * Stacks wallet session — built on the real @stacks/connect v8 API surface
+ * (isConnected / getLocalStorage / disconnect / isStacksWalletInstalled).
+ * Loads the SDK dynamically so the package only lands in the browser chunk
+ * that needs it; keeps the Cloudflare worker server bundle clean.
  */
-
-const STORAGE_KEY = "blockstack-session";
 
 export type StacksSessionState = {
   isConnected: boolean;
@@ -16,18 +15,31 @@ export type StacksSessionState = {
 export function readStacksSession(): StacksSessionState {
   if (typeof window === "undefined") return { isConnected: false, address: null };
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    // v8 persists under "@stacks/connect" as a normal JSON object.
+    // Shape: { addresses: { stx: [{ address, symbol }, ...], btc: [...] }, version }
+    const raw = window.localStorage.getItem("@stacks/connect");
     if (!raw) return { isConnected: false, address: null };
-    const data: {
+    const data = JSON.parse(raw) as {
       addresses?: { stx?: { address?: string }[] };
-      userData?: { profile?: { stxAddress?: { mainnet?: string } } };
-    } = JSON.parse(raw);
-    const stx = data.addresses?.stx?.[0]?.address ?? data.userData?.profile?.stxAddress?.mainnet;
+    };
+    const stx = data.addresses?.stx?.[0]?.address;
     if (stx) return { isConnected: true, address: stx };
   } catch {
-    /* malformed payload — treat as disconnected */
+    /* malformed payload — fall through */
   }
   return { isConnected: false, address: null };
+}
+
+export async function isStacksWalletAvailable(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  try {
+    const mod = await import("@stacks/connect");
+    const check = (mod as unknown as { isStacksWalletInstalled?: () => boolean })
+      .isStacksWalletInstalled;
+    return typeof check === "function" ? !!check() : false;
+  } catch {
+    return false;
+  }
 }
 
 export async function connectStacks(): Promise<StacksSessionState> {
@@ -37,17 +49,29 @@ export async function connectStacks(): Promise<StacksSessionState> {
   if (existing.isConnected) return existing;
 
   const mod = await import("@stacks/connect");
-  const fn = (mod as unknown as { connect?: (opts: unknown) => Promise<unknown> }).connect;
-  if (typeof fn === "function") {
-    const result = (await fn({
-      appDetails: { name: "Flap", icon: `${window.location.origin}/icon.svg` },
-    })) as { addresses?: { stx?: { address?: string }[] } } | undefined;
-    const stx = result?.addresses?.stx?.[0]?.address;
-    if (stx) {
-      writeSession(stx);
-      return { isConnected: true, address: stx };
-    }
+  const connectFn = (mod as unknown as {
+    connect?: (opts?: unknown) => Promise<unknown>;
+  }).connect;
+  if (typeof connectFn !== "function") {
+    throw new Error("@stacks/connect connect() unavailable");
   }
+
+  // v8 connect() options: enableLocalStorage persists the session in the
+  // canonical "@stacks/connect" key so isConnected()/getLocalStorage() work.
+  const result = (await connectFn({
+    enableLocalStorage: true,
+    persistWalletSelect: true,
+    forceWalletSelect: false,
+  })) as { addresses?: { symbol?: string; address: string }[] } | undefined;
+
+  // v8 returns a flat array of AddressEntry; pick the STX principal.
+  const entries = result?.addresses ?? [];
+  const stx =
+    entries.find((e) => e.symbol === "STX")?.address ??
+    entries.find((e) => e.address?.startsWith("SP") || e.address?.startsWith("ST"))?.address ??
+    null;
+
+  if (stx) return { isConnected: true, address: stx };
   return readStacksSession();
 }
 
@@ -57,20 +81,14 @@ export async function disconnectStacks(): Promise<void> {
     const mod = await import("@stacks/connect");
     const fn = (mod as unknown as { disconnect?: () => void }).disconnect;
     if (typeof fn === "function") fn();
+    const clr = (mod as unknown as { clearLocalStorage?: () => void }).clearLocalStorage;
+    if (typeof clr === "function") clr();
   } catch {
-    /* dynamic import may fail offline — fall back to local clear */
+    /* fall through to manual clear */
   }
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
-function writeSession(stxAddress: string): void {
-  try {
-    const payload = JSON.stringify({ addresses: { stx: [{ address: stxAddress }] } });
-    window.localStorage.setItem(STORAGE_KEY, payload);
+    window.localStorage.removeItem("@stacks/connect");
+    window.localStorage.removeItem("blockstack-session"); // legacy key cleanup
   } catch {
     /* ignore */
   }

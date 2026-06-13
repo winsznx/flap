@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useConfig } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { useQuery } from "@tanstack/react-query";
 import { celo } from "wagmi/chains";
+import { useChainKind } from "@/chain/ChainProvider";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 import { fetchActorAggregates, formatCusd, shortAddr, type ActorEvent } from "@/lib/leaderboard";
@@ -49,7 +50,16 @@ type Row = {
 
 export function OnchainLeaderboard() {
   const config = useConfig();
-  const [chain, setChain] = useState<ChainTab>("celo");
+  const { kind } = useChainKind();
+  const [chain, setChain] = useState<ChainTab>(kind);
+
+  // The header NetworkSelector is the single source of truth — the in-page
+  // tab follows when the header flips, but flipping the in-page tab is
+  // local-only so the leaderboard doesn't silently re-route every other
+  // panel on /play, /profile, etc.
+  useEffect(() => {
+    setChain(kind);
+  }, [kind]);
 
   const celoQuery = useQuery({
     queryKey: ["flap-leaderboard-celo", celo.id, FLAP_ADDRESS],

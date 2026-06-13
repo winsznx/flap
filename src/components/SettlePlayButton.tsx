@@ -14,7 +14,6 @@ import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
  */
 export function SettlePlayButton() {
   const { kind } = useChainKind();
-  if (kind === "stacks") return <CeloOnlyNotice feature="Settle Play" />;
 
   const [input, setInput] = useState("");
 
@@ -62,6 +61,10 @@ export function SettlePlayButton() {
     if (play.state === 3) return "Cancelled";
     return "None";
   })();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Settle Play" />;
+  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">

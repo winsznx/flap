@@ -35,14 +35,12 @@ const STATE_LABEL = ["None", "Open", "Settled", "Cancelled"] as const;
  * player is the one most motivated.
  */
 export function RecentPlays() {
+  // Hooks-first: run every hook on both chain branches so the order stays
+  // stable across chain toggle. The Stacks gate is rendered AFTER the hooks.
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const config = useConfig();
-
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Recent plays index" />;
-  }
 
   const idsQuery = useQuery({
     queryKey: ["flap-recent-plays", chainId, address],
@@ -74,7 +72,7 @@ export function RecentPlays() {
       }
       return out;
     },
-    enabled: isConnected && isFlapDeployed && !!address,
+    enabled: kind === "celo" && isConnected && isFlapDeployed && !!address,
     refetchInterval: 60_000,
   });
 
@@ -109,6 +107,9 @@ export function RecentPlays() {
 
   const { writeContract, isPending } = useWriteContract();
 
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Recent plays index" />;
+  }
   if (!isFlapDeployed) {
     return (
       <p className="text-sm text-slate-text">

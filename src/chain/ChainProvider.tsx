@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { type ChainKind, parseChainKind } from "./chainKinds";
 
 const STORAGE_KEY = "flap_chain_kind";
@@ -13,15 +13,19 @@ type ChainState = {
 const ChainContext = createContext<ChainState | null>(null);
 
 export function ChainProvider({ children }: { children: React.ReactNode }) {
-  const [kind, setKindState] = useState<ChainKind>(() => {
-    if (typeof window === "undefined") return "celo";
+  // SSR returns "celo" so the server tree never depends on localStorage —
+  // then we hydrate the saved value in a post-mount effect. This avoids the
+  // React 19 hydration mismatch warning and the flash-of-wrong-chain.
+  const [kind, setKindState] = useState<ChainKind>("celo");
+
+  useEffect(() => {
     try {
       const saved = parseChainKind(window.localStorage.getItem(STORAGE_KEY));
-      return saved ?? "celo";
+      if (saved && saved !== "celo") setKindState(saved);
     } catch {
-      return "celo";
+      /* localStorage may throw in private mode — fall through to celo */
     }
-  });
+  }, []);
 
   const setKind = (next: ChainKind) => {
     setKindState(next);

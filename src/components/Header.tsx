@@ -28,9 +28,9 @@ export function Header() {
 
           <nav className="hidden items-center gap-1 rounded-full bg-[var(--color-fog-gray)] p-1 md:flex">
             {[
-              { label: "How It Works", href: "#how-it-works" },
-              { label: "Rewards", href: "#rewards" },
-              { label: "Leaderboard", href: "#leaderboard" },
+              { label: "How It Works", href: "/#how-it-works" },
+              { label: "Rewards", href: "/#rewards" },
+              { label: "Leaderboard", href: "/leaderboard" },
             ].map((link) => (
               <Link key={link.label} href={link.href} className="nav-link">
                 {link.label}
@@ -66,10 +66,15 @@ export function Header() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
-            {["How It Works", "Rewards", "Leaderboard"].map((item) => (
-              <Link key={item} href={`#${item.toLowerCase().replace(/ /g, "-")}`}
+            {[
+              { label: "How It Works", href: "/#how-it-works" },
+              { label: "Rewards", href: "/#rewards" },
+              { label: "Leaderboard", href: "/leaderboard" },
+              { label: "Profile", href: "/profile" },
+            ].map((item) => (
+              <Link key={item.label} href={item.href}
                 className="btn-ghost"
-                onClick={() => setMenuOpen(false)}>{item}</Link>
+                onClick={() => setMenuOpen(false)}>{item.label}</Link>
             ))}
             <div className="my-2 h-px bg-[var(--color-steel-gray)]" />
             <Link

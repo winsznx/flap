@@ -8,11 +8,29 @@ export type ClarityArg =
   | { type: "bool"; value: boolean }
   | { type: "buff"; value: Uint8Array | string };
 
+/**
+ * High-level post-condition spec. Resolved into @stacks/transactions Pc
+ * builder calls inside the hook so callers can stay agnostic of the SDK shape.
+ */
+export type StxPostCondition = {
+  type: "stx-eq";
+  from: string;
+  microStx: bigint;
+};
+
 export type StacksWriteOpts = {
   contractAddress: string;
   contractName: string;
   functionName: string;
   args: ClarityArg[];
+  /**
+   * "deny" + explicit `postConditions` is what you want any time the call
+   * moves real STX (e.g. top-up, start-play, create-match) — the wallet
+   * refuses to sign if the actual transfer doesn't match. Default "allow"
+   * stays for read-style writes (vote, tag, daily-strike, daily-hop).
+   */
+  postConditionMode?: "allow" | "deny";
+  postConditions?: StxPostCondition[];
 };
 
 export type StacksWriteState = {
@@ -66,6 +84,16 @@ export function useStacksWrite(): StacksWriteState & {
         throw new Error(`unsupported clarity arg type`);
       });
 
+      const mode = opts.postConditionMode ?? "allow";
+      const pcBuilder = (cv as unknown as { Pc?: { principal: (p: string) => { willSendEq: (n: bigint) => { ustx: () => unknown } } } })
+        .Pc;
+      const postConditions =
+        opts.postConditions && pcBuilder
+          ? opts.postConditions.map((p) =>
+              pcBuilder.principal(p.from).willSendEq(p.microStx).ustx(),
+            )
+          : undefined;
+
       const requestFn = (sdk as unknown as { request?: (m: string, p: unknown) => Promise<unknown> })
         .request;
 
@@ -75,7 +103,8 @@ export function useStacksWrite(): StacksWriteState & {
           functionName: opts.functionName,
           functionArgs,
           network: "mainnet",
-          postConditionMode: "allow",
+          postConditionMode: mode,
+          ...(postConditions ? { postConditions } : {}),
         })) as { txid?: string } | undefined;
         const id = res?.txid ?? null;
         setTxid(id);
@@ -89,13 +118,16 @@ export function useStacksWrite(): StacksWriteState & {
         }
       ).openContractCall;
       if (typeof openFn === "function") {
+        // Legacy v6/v7 openContractCall: numeric postConditionMode (1=allow, 2=deny).
+        const legacyMode = mode === "deny" ? 2 : 1;
         return await new Promise<string | null>((resolve, reject) => {
           openFn({
             contractAddress: opts.contractAddress,
             contractName: opts.contractName,
             functionName: opts.functionName,
             functionArgs,
-            postConditionMode: 1,
+            postConditionMode: legacyMode,
+            ...(postConditions ? { postConditions } : {}),
             onFinish: (data: { txId: string }) => {
               setTxid(data.txId);
               setPending(false);

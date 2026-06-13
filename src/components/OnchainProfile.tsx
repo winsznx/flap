@@ -22,14 +22,12 @@ const STREAK_MILESTONES = [7, 14, 30, 100] as const;
  * permanent on-chain progress in one place.
  */
 export function OnchainProfile() {
+  // Hooks-first: run every hook on both chain branches so the order stays
+  // stable across chain toggle. The Stacks gate is rendered AFTER.
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
 
-  if (kind === "stacks") {
-    return <CeloOnlyNotice feature="Onchain profile stats" />;
-  }
-
-  const enabled = isConnected && isFlapDeployed && !!address;
+  const enabled = kind === "celo" && isConnected && isFlapDeployed && !!address;
 
   const { data: streakRaw } = useReadContract({
     abi: flapAbi,
@@ -68,6 +66,7 @@ export function OnchainProfile() {
     useWriteContract();
   const { isLoading: claimMining, isSuccess: claimConfirmed } = useWaitForTransactionReceipt({
     hash: claimHash,
+    query: { enabled: !!claimHash },
   });
 
   function claim(milestone: number) {
@@ -90,6 +89,10 @@ export function OnchainProfile() {
   const today = todayRaw !== undefined ? Number(todayRaw) : 0;
   const streakActiveToday = lastDay === today && lastDay > 0;
   const streakStaleDays = lastDay > 0 ? Math.max(0, today - lastDay) : 0;
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Onchain profile stats" />;
+  }
 
   return (
     <div className="card-surface px-6 py-5 mb-6">

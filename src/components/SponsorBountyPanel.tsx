@@ -22,7 +22,6 @@ const PRESETS = [1, 5, 10, 25];
  */
 export function SponsorBountyPanel() {
   const { kind } = useChainKind();
-  if (kind === "stacks") return <CeloOnlyNotice feature="Sponsor Bounty" />;
 
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState<number>(5);
@@ -85,6 +84,10 @@ export function SponsorBountyPanel() {
           : needsApprove
             ? `Approve $${amount}`
             : `Top up $${amount} →`;
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Sponsor Bounty" />;
+  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">

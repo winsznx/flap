@@ -25,7 +25,6 @@ const PARTICIPATION_THRESHOLD = 5;
  */
 export function SeasonBadgesPanel() {
   const { kind } = useChainKind();
-  if (kind === "stacks") return <CeloOnlyNotice feature="Season Badges" />;
 
   const { address, isConnected } = useAccount();
   const [seasonId, setSeasonId] = useState("");
@@ -129,6 +128,10 @@ export function SeasonBadgesPanel() {
     if (!finalized) return "Season hasn't been finalized yet — badges unlock after finalize.";
     return null;
   })();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Season Badges" />;
+  }
 
   return (
     <div className="card-surface px-6 py-5 space-y-4">

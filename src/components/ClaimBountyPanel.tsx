@@ -25,7 +25,6 @@ import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
  */
 export function ClaimBountyPanel() {
   const { kind } = useChainKind();
-  if (kind === "stacks") return <CeloOnlyNotice feature="Claim Bounty" />;
 
   const { address, isConnected } = useAccount();
 
@@ -85,6 +84,10 @@ export function ClaimBountyPanel() {
                 : "Claim bounty";
 
   const poolStr = `$${Number(formatUnits(pool, 18)).toFixed(2)}`;
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Claim Bounty" />;
+  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">

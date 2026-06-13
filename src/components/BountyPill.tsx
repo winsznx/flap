@@ -22,11 +22,14 @@ export function BountyPill() {
     query: { enabled: onCelo && isFlapDeployed, refetchInterval: 60_000 },
   });
 
+  // `today` returns 0n on a fresh deployment — that's a valid day index, not
+  // "missing". Gate on `!== undefined` rather than truthiness so the bounty
+  // read still fires for day 0.
   const { data: ledger } = useReadContract({
     abi: flapAbi,
     address: FLAP_ADDRESS,
     functionName: "getDay",
-    args: today ? [today] : undefined,
+    args: today !== undefined ? [today] : undefined,
     query: {
       enabled: onCelo && isFlapDeployed && today !== undefined,
       refetchInterval: 30_000,

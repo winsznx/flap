@@ -30,7 +30,6 @@ type PlayTuple = readonly [
  */
 export function CancelPlayButton() {
   const { kind } = useChainKind();
-  if (kind === "stacks") return <CeloOnlyNotice feature="Cancel Play" />;
 
   const { address, isConnected } = useAccount();
   const [playId, setPlayId] = useState("");
@@ -87,6 +86,10 @@ export function CancelPlayButton() {
     if (score > 0n) return "Score already reported — settle from /play instead.";
     return null;
   })();
+
+  if (kind === "stacks") {
+    return <CeloOnlyNotice feature="Cancel Play" />;
+  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { erc20Abi, parseUnits } from "viem";
+import { useMemo, useState } from "react";
+import { erc20Abi, parseEventLogs, parseUnits } from "viem";
 import {
   useAccount,
   useReadContract,
@@ -44,7 +44,31 @@ export function StartPlayPanel() {
   });
 
   const { writeContract, data: hash, reset, isPending } = useWriteContract();
-  const { isLoading: mining, data: receipt } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: mining, data: receipt } = useWaitForTransactionReceipt({
+    hash,
+    query: { enabled: !!hash },
+  });
+
+  // Parse PlayOpened from the receipt so the user gets the playId they need
+  // for the Settle / Cancel panels — without this they have to scrape the
+  // log themselves and the post-start UX dead-ends.
+  const playId = useMemo<bigint | null>(() => {
+    if (!receipt) return null;
+    try {
+      const events = parseEventLogs({
+        abi: flapAbi,
+        eventName: "PlayOpened",
+        logs: receipt.logs,
+      });
+      const ev = events[0];
+      if (ev && "args" in ev) {
+        return (ev.args as { playId: bigint }).playId;
+      }
+    } catch {
+      /* ignore parse errors — receipt may carry the approve, not PlayOpened */
+    }
+    return null;
+  }, [receipt]);
 
   const needsApprove = kind === "celo" && (!allowance || (allowance as bigint) < stakeWei);
   const enabledCelo = isConnected && isFlapDeployed && !mining && !isPending;
@@ -141,7 +165,13 @@ export function StartPlayPanel() {
           </button>
         </div>
       )}
-      {receipt && (
+      {receipt && playId !== null && (
+        <p className="text-xs text-emerald-600">
+          Play opened — id <span className="font-mono font-semibold">#{playId.toString()}</span>.
+          Paste this id into the Settle / Cancel panels below when you&apos;re done.
+        </p>
+      )}
+      {receipt && playId === null && (
         <p className="text-xs text-emerald-600">
           Play opened. Hit the threshold to win 2× back; miss it and your stake feeds today&apos;s
           bounty pool.

@@ -31,9 +31,9 @@ export function Footer() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { label: "Play Now", href: "/play" },
-                { label: "Leaderboard", href: "#leaderboard" },
-                { label: "Daily Rewards", href: "#rewards" },
-                { label: "How It Works", href: "#how-it-works" },
+                { label: "Leaderboard", href: "/leaderboard" },
+                { label: "Daily Rewards", href: "/#rewards" },
+                { label: "How It Works", href: "/#how-it-works" },
               ].map((link) => (
                 <Link key={link.label} href={link.href} style={{
                   fontFamily: 'var(--font-suisseintl)', fontSize: 14, color: 'rgba(255,255,255,0.6)',
@@ -47,11 +47,34 @@ export function Footer() {
           <div>
             <h4 style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 11, fontWeight: 'var(--font-weight-medium)', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>Verify</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {["Celo contract (Celoscan)", "Stacks contract (Hiro)", "Source on GitHub"].map((label) => (
-                <a key={label} href="#" style={{
-                  fontFamily: 'var(--font-suisseintl)', fontSize: 14, color: 'rgba(255,255,255,0.6)',
-                  textDecoration: 'none',
-                }}>{label}</a>
+              {[
+                {
+                  label: "Celo contract (Celoscan)",
+                  href: `https://celoscan.io/address/${process.env.NEXT_PUBLIC_FLAP_ADDRESS ?? ""}`,
+                },
+                {
+                  label: "Stacks contract (Hiro)",
+                  href: "https://explorer.hiro.so/address/SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.flap?chain=mainnet",
+                },
+                {
+                  label: "Source on GitHub",
+                  href: "https://github.com/winsznx/flap",
+                },
+              ].map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    fontFamily: 'var(--font-suisseintl)',
+                    fontSize: 14,
+                    color: 'rgba(255,255,255,0.6)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {link.label}
+                </a>
               ))}
             </div>
           </div>

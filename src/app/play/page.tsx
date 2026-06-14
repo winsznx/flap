@@ -238,7 +238,7 @@ export default function PlayPage() {
                 onClick={handleTap}
                 className="btn-primary w-full py-3 text-[14px] mb-3"
               >
-                Play Again — $0.05
+                Replay demo
               </button>
               <Link
                 href="/"

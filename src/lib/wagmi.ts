@@ -3,6 +3,7 @@ import { celo, celoAlfajores } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 
 const wcId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://flap.timjosh507.workers.dev";
 
 export const wagmiConfig = createConfig({
   chains: [celo, celoAlfajores],
@@ -15,7 +16,7 @@ export const wagmiConfig = createConfig({
             metadata: {
               name: "Flap",
               description: "Sats-back arcade. Tap to fly.",
-              url: "https://flap.timjosh507.workers.dev",
+              url: siteUrl,
               icons: [],
             },
             showQrModal: true,

@@ -104,18 +104,16 @@ export function StartPlayPanel() {
       if (!s.isConnected) return;
     }
     const stakeMicroStx = BigInt(Math.floor(stake * 1_000_000));
-    const stxFrom = s.address;
+    // NOTE on post-condition mode: the deployed `flap.start-play` Clarity is
+    // currently a stub that doesn't stx-transfer? the stake from tx-sender
+    // — so `deny + willSendEq(stake)` would cause the wallet to refuse to
+    // sign with a post-condition violation. Flip to `deny` + exact STX
+    // post-condition the same day flap.clar starts escrowing the stake.
     await stx.call({
       contractAddress: FLAP_STX_DEPLOYER,
       contractName: FLAP_STX_CONTRACT,
       functionName: FLAP_STX_START_PLAY_FN,
       args: [{ type: "uint", value: stakeMicroStx }],
-      // Sign with deny + an explicit microStx post-condition so the wallet
-      // refuses if start-play tries to debit more than the chosen stake.
-      postConditionMode: "deny",
-      postConditions: stxFrom
-        ? [{ type: "stx-eq", from: stxFrom, microStx: stakeMicroStx }]
-        : undefined,
     });
   }
 

@@ -9,6 +9,7 @@ import { CancelPlayButton } from "@/components/CancelPlayButton";
 import { ClaimBountyPanel } from "@/components/ClaimBountyPanel";
 import { ConnectButton } from "@/components/ConnectButton";
 import { HopButton } from "@/components/HopButton";
+import { NetworkSelector } from "@/components/NetworkSelector";
 import { SettlePlayButton } from "@/components/SettlePlayButton";
 import { SponsorBountyPanel } from "@/components/SponsorBountyPanel";
 import { StartPlayPanel } from "@/components/StartPlayPanel";
@@ -123,6 +124,7 @@ export default function PlayPage() {
         </Link>
         <div className="flex items-center gap-2">
           <BountyPill />
+          <NetworkSelector />
           <ConnectButton />
         </div>
       </div>

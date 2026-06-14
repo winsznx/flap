@@ -63,7 +63,7 @@ export function OnchainLeaderboard() {
   const celoQuery = useQuery({
     queryKey: ["flap-leaderboard-celo", ACTIVE_CHAIN_ID, FLAP_ADDRESS],
     queryFn: async () => {
-      const client = getPublicClient(config, { chainId: ACTIVE_CHAIN_ID });
+      const client = getPublicClient(config, { chainId: ACTIVE_CHAIN_ID as 42220 | 44787 });
       if (!client) return [];
       return fetchActorAggregates({
         client,

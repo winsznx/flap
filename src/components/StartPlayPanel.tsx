@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { erc20Abi, parseEventLogs, parseUnits } from "viem";
 import {
   useAccount,
@@ -35,7 +35,7 @@ export function StartPlayPanel() {
   const stakeWei = parseUnits(stake.toString(), 18);
   const stx = useStacksWrite();
 
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
     address: CUSD_ADDRESS,
     functionName: "allowance",
@@ -44,10 +44,19 @@ export function StartPlayPanel() {
   });
 
   const { writeContract, data: hash, reset, isPending } = useWriteContract();
-  const { isLoading: mining, data: receipt } = useWaitForTransactionReceipt({
+  const { isLoading: mining, isSuccess: confirmed, data: receipt } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: !!hash },
   });
+
+  // Refetch allowance after the approve receipt confirms so the next click
+  // fires Flap.startPlay instead of sending another approve.
+  useEffect(() => {
+    if (confirmed && phase === "approving") {
+      void refetchAllowance();
+      setPhase("starting");
+    }
+  }, [confirmed, phase, refetchAllowance]);
 
   // Parse PlayOpened from the receipt so the user gets the playId they need
   // for the Settle / Cancel panels — without this they have to scrape the

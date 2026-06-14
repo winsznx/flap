@@ -1,10 +1,19 @@
 import Link from "next/link";
+import {
+  FLAP_STX_CONTRACT,
+  FLAP_STX_DEPLOYER,
+} from "@/chain/stacksContracts";
 
 /**
  * Footer — Dark section with Column tokens
  * Per DESIGN.md: Ink Blue bg for dark contexts
  */
 export function Footer() {
+  const flapEvm = process.env.NEXT_PUBLIC_FLAP_ADDRESS;
+  const celoscanHref = flapEvm
+    ? `https://celoscan.io/address/${flapEvm}`
+    : "https://celoscan.io";
+  const hiroHref = `https://explorer.hiro.so/address/${FLAP_STX_DEPLOYER}.${FLAP_STX_CONTRACT}?chain=mainnet`;
   return (
     <footer style={{ background: 'var(--color-ink-blue)', color: 'white', padding: '64px 0 32px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
@@ -48,18 +57,9 @@ export function Footer() {
             <h4 style={{ fontFamily: 'var(--font-suisseintl)', fontSize: 11, fontWeight: 'var(--font-weight-medium)', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>Verify</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
-                {
-                  label: "Celo contract (Celoscan)",
-                  href: `https://celoscan.io/address/${process.env.NEXT_PUBLIC_FLAP_ADDRESS ?? ""}`,
-                },
-                {
-                  label: "Stacks contract (Hiro)",
-                  href: "https://explorer.hiro.so/address/SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.flap?chain=mainnet",
-                },
-                {
-                  label: "Source on GitHub",
-                  href: "https://github.com/winsznx/flap",
-                },
+                { label: "Celo contract (Celoscan)", href: celoscanHref },
+                { label: "Stacks contract (Hiro)", href: hiroHref },
+                { label: "Source on GitHub", href: "https://github.com/winsznx/flap" },
               ].map((link) => (
                 <a
                   key={link.label}

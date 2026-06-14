@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { formatUnits } from "viem";
-import { useChainId, useConfig, useReadContract } from "wagmi";
+import { useConfig, useReadContract } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { flapAbi } from "@/lib/abi/flap";
-import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
+import { ACTIVE_CHAIN_ID, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
 const LOOKBACK = 50_000n;
 
@@ -24,7 +24,11 @@ const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
  * the focus on what's chasing today's pool.
  */
 export function TodayLeaderboard() {
-  const chainId = useChainId();
+  // Pin to ACTIVE_CHAIN_ID (the deployment chain) rather than the wallet's
+  // chain — otherwise a user connected to the wrong network (Alfajores when
+  // the deploy is mainnet, etc.) silently scans the wrong RPC and gets back
+  // an empty leaderboard with no error.
+  const chainId = ACTIVE_CHAIN_ID as 42220 | 44787;
   const config = useConfig();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState<string | null>(null);

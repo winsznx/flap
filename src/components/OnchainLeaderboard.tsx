@@ -4,10 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useConfig } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { useQuery } from "@tanstack/react-query";
-import { celo } from "wagmi/chains";
 import { useChainKind } from "@/chain/ChainProvider";
 import { flapAbi } from "@/lib/abi/flap";
-import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
+import { ACTIVE_CHAIN_ID, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 import { fetchActorAggregates, formatCusd, shortAddr, type ActorEvent } from "@/lib/leaderboard";
 import {
   fetchStacksAggregates,
@@ -62,9 +61,9 @@ export function OnchainLeaderboard() {
   }, [kind]);
 
   const celoQuery = useQuery({
-    queryKey: ["flap-leaderboard-celo", celo.id, FLAP_ADDRESS],
+    queryKey: ["flap-leaderboard-celo", ACTIVE_CHAIN_ID, FLAP_ADDRESS],
     queryFn: async () => {
-      const client = getPublicClient(config, { chainId: celo.id });
+      const client = getPublicClient(config, { chainId: ACTIVE_CHAIN_ID });
       if (!client) return [];
       return fetchActorAggregates({
         client,

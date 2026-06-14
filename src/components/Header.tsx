@@ -1,12 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NetworkSelector } from "./NetworkSelector";
 import { ConnectButton } from "./ConnectButton";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Escape-to-close on the mobile menu so keyboard users can dismiss without
+  // hunting for the X button.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3">
@@ -54,7 +65,9 @@ export function Header() {
               type="button"
               className="btn-ghost btn-compact"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="flap-mobile-menu"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-blue)" strokeWidth="2">
               {menuOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 8h16M4 16h16" />}
@@ -65,7 +78,7 @@ export function Header() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
+          <div id="flap-mobile-menu" className="md:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
             {[
               { label: "How It Works", href: "/#how-it-works" },
               { label: "Rewards", href: "/#rewards" },

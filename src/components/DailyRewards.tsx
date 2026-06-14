@@ -1,12 +1,21 @@
+import Link from "next/link";
+
 /**
  * Daily Rewards — Column Design System
+ *
  * Left: heading + body + checklist
- * Right: Card with streak calendar + CTA
- * Section bg: Fog Gray (per DESIGN.md "alternate between Ghost White and Fog Gray")
+ * Right: Card with streak calendar + a CTA that actually goes somewhere.
+ *
+ * The previous version hardcoded day 1 as "done" (lying to first-time
+ * visitors) and the CTA was a permanently-disabled button. We keep the
+ * marketing layout but route the CTA into /play where the real on-chain
+ * HopButton handles check-in.
  */
 export function DailyRewards() {
+  // Marketing-only preview. None of these are checked off — we don't lie
+  // to a first-time visitor by pretending day 1 is already done.
   const days = [
-    { day: 1, label: "1", reward: "1 Free Play", done: true },
+    { day: 1, label: "1", reward: "1 Free Play", done: false },
     { day: 2, label: "2", reward: "1 Free Play", done: false },
     { day: 3, label: "3", reward: "1 Free Play", done: false },
     { day: 4, label: "4", reward: "1 Free Play", done: false },
@@ -97,9 +106,13 @@ export function DailyRewards() {
               </div>
 
               <div style={{ marginTop: 20, paddingTop: 20, borderTop: '1px solid var(--color-steel-gray)' }}>
-                <button className="btn-primary" style={{ width: '100%', padding: '12px 0', fontSize: 14 }} disabled>
-                  Connect Wallet to Check In
-                </button>
+                <Link
+                  href="/play"
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '12px 0', fontSize: 14, display: 'block', textAlign: 'center' }}
+                >
+                  Check in on /play
+                </Link>
               </div>
             </div>
           </div>

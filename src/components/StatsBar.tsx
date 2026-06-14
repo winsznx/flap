@@ -34,19 +34,11 @@ export function StatsBar() {
     },
   });
 
-  const { data: streakRaw } = useReadContract({
-    abi: flapAbi,
-    address: FLAP_ADDRESS,
-    functionName: "playStreak",
-    args: undefined,
-    query: { enabled: false },
-  });
-  void streakRaw;
-
   const stats = useMemo(() => {
     const bounty = ledger?.bountyPool ? Number(formatUnits(ledger.bountyPool, 18)) : 0;
-    const finalized = ledger?.finalized ? 1 : 0;
     const top = ledger?.topScore ? Number(ledger.topScore) : 0;
+    const finalized = ledger?.finalized;
+    const status = finalized ? "Settled" : "Open";
     return [
       {
         label: "Today's bounty",
@@ -57,8 +49,8 @@ export function StatsBar() {
         value: onCelo ? top.toLocaleString() : "—",
       },
       {
-        label: "Days settled",
-        value: onCelo ? finalized.toString() : "—",
+        label: "Today's status",
+        value: onCelo ? status : "—",
       },
       {
         label: "Network",

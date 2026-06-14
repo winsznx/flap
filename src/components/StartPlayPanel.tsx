@@ -40,7 +40,7 @@ export function StartPlayPanel() {
     address: CUSD_ADDRESS,
     functionName: "allowance",
     args: address ? [address, FLAP_ADDRESS] : undefined,
-    query: { enabled: isConnected && isFlapDeployed && !!address },
+    query: { enabled: kind === "celo" && isConnected && isFlapDeployed && !!address },
   });
 
   const { writeContract, data: hash, reset, isPending } = useWriteContract();

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
 import { connectStacks, readStacksSession } from "@/chain/stacksSession";
+import { useStacksSession } from "@/chain/useStacksSession";
 import { useStacksWrite } from "@/chain/useStacksWrite";
 import {
   FLAP_STX_DAILY_HOP_FN,
@@ -19,8 +20,11 @@ export function HopButton() {
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
   const [nowSec, setNowSec] = useState(0);
-  const [stxConnected, setStxConnected] = useState(false);
   const stx = useStacksWrite();
+  // Reactive Stacks session — without this the button stayed stuck on the
+  // "Connect Stacks to hop" CTA after a header-driven connect because the
+  // local stxConnected flag was a one-shot read on chain-toggle.
+  const { isConnected: stxConnected, address: stxPrincipalSession } = useStacksSession();
 
   useEffect(() => {
     const initial = window.setTimeout(() => setNowSec(Math.floor(Date.now() / 1000)), 0);
@@ -30,11 +34,6 @@ export function HopButton() {
       window.clearInterval(id);
     };
   }, []);
-
-  useEffect(() => {
-    if (kind !== "stacks") return;
-    setStxConnected(readStacksSession().isConnected);
-  }, [kind]);
 
   const { data: last } = useReadContract({
     abi: flapAbi,
@@ -84,7 +83,6 @@ export function HopButton() {
     let s = readStacksSession();
     if (!s.isConnected) {
       s = await connectStacks();
-      setStxConnected(s.isConnected);
       if (!s.isConnected) return;
     }
     const res = await stx.call({
@@ -125,7 +123,7 @@ export function HopButton() {
   // principal so two wallets in the same browser don't share stamps;
   // falls back to the legacy unkeyed entry for one release.
   let stacksCooldownLabel: string | null = null;
-  const stxPrincipal = readStacksSession().address;
+  const stxPrincipal = stxPrincipalSession;
   if (typeof window !== "undefined" && kind === "stacks" && stxPrincipal) {
     try {
       const raw =

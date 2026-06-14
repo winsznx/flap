@@ -85,12 +85,22 @@ export function useStacksWrite(): StacksWriteState & {
       });
 
       const mode = opts.postConditionMode ?? "allow";
-      const pcBuilder = (cv as unknown as { Pc?: { principal: (p: string) => { willSendEq: (n: bigint) => { ustx: () => unknown } } } })
-        .Pc;
+      // `request("stx_callContract")` (v8) accepts hex-encoded post-condition
+      // strings, NOT raw Pc objects. Build the StxPostCondition with the
+      // Pc helper, then serialize via postConditionToHex so the wallet
+      // actually parses and enforces it.
+      const cvNs = cv as unknown as {
+        Pc?: {
+          principal: (p: string) => { willSendEq: (n: bigint) => { ustx: () => unknown } };
+        };
+        postConditionToHex?: (pc: unknown) => string;
+      };
+      const pcBuilder = cvNs.Pc;
+      const serialize = cvNs.postConditionToHex;
       const postConditions =
-        opts.postConditions && pcBuilder
+        opts.postConditions && pcBuilder && serialize
           ? opts.postConditions.map((p) =>
-              pcBuilder.principal(p.from).willSendEq(p.microStx).ustx(),
+              serialize(pcBuilder.principal(p.from).willSendEq(p.microStx).ustx()),
             )
           : undefined;
 

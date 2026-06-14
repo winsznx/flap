@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { formatUnits } from "viem";
 import {
   useAccount,
-  useChainId,
   useConfig,
   useReadContracts,
   useWriteContract,
@@ -14,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useChainKind } from "@/chain/ChainProvider";
 import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
-import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
+import { ACTIVE_CHAIN_ID, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
 const LOOKBACK = 200_000n;
 
@@ -39,7 +38,9 @@ export function RecentPlays() {
   // stable across chain toggle. The Stacks gate is rendered AFTER the hooks.
   const { kind } = useChainKind();
   const { address, isConnected } = useAccount();
-  const chainId = useChainId();
+  // Pin to ACTIVE_CHAIN_ID so a wallet on the wrong celo network can't make
+  // this widget silently scan the wrong RPC and render "no plays yet".
+  const chainId = ACTIVE_CHAIN_ID as 42220 | 44787;
   const config = useConfig();
 
   const idsQuery = useQuery({

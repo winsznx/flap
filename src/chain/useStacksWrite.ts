@@ -97,12 +97,22 @@ export function useStacksWrite(): StacksWriteState & {
       };
       const pcBuilder = cvNs.Pc;
       const serialize = cvNs.postConditionToHex;
-      const postConditions =
-        opts.postConditions && pcBuilder && serialize
-          ? opts.postConditions.map((p) =>
-              serialize(pcBuilder.principal(p.from).willSendEq(p.microStx).ustx()),
-            )
-          : undefined;
+      let postConditions: string[] | undefined;
+      if (opts.postConditions) {
+        if (pcBuilder && serialize) {
+          postConditions = opts.postConditions.map((p) =>
+            serialize(pcBuilder.principal(p.from).willSendEq(p.microStx).ustx()),
+          );
+        } else {
+          // The caller asked for post-conditions but the SDK didn't expose
+          // Pc or postConditionToHex. Surface this — without the warning
+          // every deny+postConditions call silently downgrades to "no
+          // post-conditions" and the wallet signs anything.
+          console.warn(
+            "useStacksWrite: @stacks/transactions did not expose Pc or postConditionToHex; post-conditions on this call will not be enforced.",
+          );
+        }
+      }
 
       const requestFn = (sdk as unknown as { request?: (m: string, p: unknown) => Promise<unknown> })
         .request;

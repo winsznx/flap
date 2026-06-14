@@ -93,9 +93,11 @@ export function HopButton() {
       functionName: FLAP_STX_DAILY_HOP_FN,
       args: [],
     });
-    if (res) {
+    if (res && s.address) {
       try {
-        window.localStorage.setItem("flap.hop.lastStx", String(Date.now()));
+        // Key the cooldown stamp by Stacks principal so swapping wallets in
+        // the same browser doesn't inherit the previous user's cooldown.
+        window.localStorage.setItem(`flap.hop.lastStx:${s.address}`, String(Date.now()));
       } catch {
         /* ignore */
       }
@@ -119,11 +121,16 @@ export function HopButton() {
   // Read the last-hop timestamp we stamped after a successful Stacks call to
   // surface a local cooldown UI between visits. The contract enforces the
   // real cooldown server-side; this just stops the user from spamming the
-  // wallet popup when they just hopped seconds ago.
+  // wallet popup when they just hopped seconds ago. Keyed by Stacks
+  // principal so two wallets in the same browser don't share stamps;
+  // falls back to the legacy unkeyed entry for one release.
   let stacksCooldownLabel: string | null = null;
-  if (typeof window !== "undefined" && kind === "stacks") {
+  const stxPrincipal = readStacksSession().address;
+  if (typeof window !== "undefined" && kind === "stacks" && stxPrincipal) {
     try {
-      const raw = window.localStorage.getItem("flap.hop.lastStx");
+      const raw =
+        window.localStorage.getItem(`flap.hop.lastStx:${stxPrincipal}`) ??
+        window.localStorage.getItem("flap.hop.lastStx");
       if (raw) {
         const last = Number(raw);
         const remaining = COOLDOWN_SEC - Math.floor((Date.now() - last) / 1000);

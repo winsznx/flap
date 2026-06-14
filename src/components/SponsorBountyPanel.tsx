@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { erc20Abi, parseUnits } from "viem";
 import {
   useAccount,
@@ -36,7 +36,7 @@ export function SponsorBountyPanel() {
 
   const wei = parseUnits(amount.toString(), 18);
 
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     abi: erc20Abi,
     address: CUSD_ADDRESS,
     functionName: "allowance",
@@ -45,7 +45,19 @@ export function SponsorBountyPanel() {
   });
 
   const { writeContract, data: hash, reset, isPending } = useWriteContract();
-  const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+    query: { enabled: !!hash },
+  });
+
+  // Refetch allowance after the approve receipt confirms so the next click
+  // fires sponsorDailyBounty instead of sending another approve.
+  useEffect(() => {
+    if (isSuccess && phase === "approving") {
+      void refetchAllowance();
+      setPhase("sponsoring");
+    }
+  }, [isSuccess, phase, refetchAllowance]);
 
   const needsApprove = !allowance || (allowance as bigint) < wei;
   const enabled = isConnected && isFlapDeployed && !mining && !isPending && today !== undefined;

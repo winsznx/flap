@@ -156,7 +156,7 @@ export function StartPlayPanel() {
                   : "border-slate-300 text-slate-700 hover:border-slate-500"
               }`}
             >
-              ${s}
+              {kind === "celo" ? `$${s}` : `${s} STX`}
             </button>
           ))}
         </div>

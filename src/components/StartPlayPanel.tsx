@@ -172,12 +172,29 @@ export function StartPlayPanel() {
       </button>
 
       {hash && (
-        <div className="text-xs text-slate-500 flex items-center gap-2">
-          tx: {hash.slice(0, 10)}…
+        <div className="text-xs text-slate-500 flex items-center gap-3">
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-action-orange underline hover:text-slate-900"
+          >
+            view tx ↗ ({hash.slice(0, 10)}…)
+          </a>
           <button type="button" onClick={() => reset()} className="underline">
             reset
           </button>
         </div>
+      )}
+      {stx.txid && (
+        <a
+          href={`https://explorer.hiro.so/txid/${stx.txid}?chain=mainnet`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs text-action-orange underline hover:text-slate-900"
+        >
+          view stacks tx ↗
+        </a>
       )}
       {receipt && playId !== null && (
         <p className="text-xs text-emerald-600">

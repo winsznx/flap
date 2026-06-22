@@ -83,10 +83,8 @@ export function DailyRewards() {
 
               <div className="grid grid-cols-7" style={{ gap: 8 }}>
                 {days.map((d) => (
-                  <div key={d.day} className="flex flex-col items-center" style={{ gap: 6 }}>
-                    <div className="flex items-center justify-center" style={{
-                      width: 40,
-                      height: 40,
+                  <div key={d.day} className="flex flex-col items-center min-w-0" style={{ gap: 6 }}>
+                    <div className="flex items-center justify-center w-full aspect-square" style={{
                       borderRadius: 'var(--radius-cards)',
                       fontSize: 14,
                       fontWeight: 'var(--font-weight-medium)',

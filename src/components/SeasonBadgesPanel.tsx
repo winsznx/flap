@@ -222,7 +222,7 @@ function BadgeRow({
           type="button"
           onClick={onClaim}
           disabled={disabled}
-          className="px-3 py-1.5 rounded-full text-[12px] font-mono bg-action-orange/15 text-action-orange border border-action-orange/40 hover:bg-action-orange/25 disabled:opacity-50"
+          className="px-3 py-1.5 min-h-[44px] rounded-full text-[12px] font-mono bg-action-orange/15 text-action-orange border border-action-orange/40 hover:bg-action-orange/25 disabled:opacity-50"
         >
           {pending ? "minting…" : "claim →"}
         </button>

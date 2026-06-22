@@ -22,7 +22,7 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3">
       <div className="mx-auto max-w-[1200px]">
-        <div className="nav-frame flex min-h-[72px] items-center justify-between gap-5 px-5 md:px-6">
+        <div className="nav-frame flex min-h-[60px] md:min-h-[72px] items-center justify-between gap-2 px-3 md:gap-5 md:px-6">
           <Link href="/" className="flex min-w-0 items-center gap-3 no-underline" aria-label="Flap home">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-action-orange)] shadow-[0_1px_3px_rgba(236,101,43,0.3)]">
               <span className="text-[13px] font-bold text-white">F</span>

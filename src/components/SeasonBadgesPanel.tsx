@@ -98,6 +98,7 @@ export function SeasonBadgesPanel() {
     isPending,
     variables: pendingArgs,
     reset,
+    error: writeError,
   } = useWriteContract();
   const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({ hash });
 
@@ -179,12 +180,22 @@ export function SeasonBadgesPanel() {
 
       {hash && (
         <div className="text-xs text-slate-text flex items-center gap-2 font-mono">
-          tx <span className="text-ink-blue">{hash.slice(0, 10)}…</span>
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-action-orange underline"
+          >
+            view tx ↗ ({hash.slice(0, 10)}…)
+          </a>
           {confirmed && <span className="text-success-moss">minted ✓</span>}
           <button type="button" onClick={() => reset()} className="ml-auto underline">
             reset
           </button>
         </div>
+      )}
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
       )}
     </div>
   );

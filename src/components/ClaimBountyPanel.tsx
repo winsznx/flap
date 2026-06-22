@@ -45,7 +45,8 @@ export function ClaimBountyPanel() {
     query: { enabled: isFlapDeployed && yesterdayIdx !== undefined, refetchInterval: 30_000 },
   });
 
-  const { writeContract, data: hash, isPending, reset } = useWriteContract();
+  const { writeContract, data: hash, isPending, reset, error: writeError } =
+    useWriteContract();
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const pool = ledger?.bountyPool ?? 0n;
@@ -148,6 +149,9 @@ export function ClaimBountyPanel() {
             reset
           </button>
         </div>
+      )}
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
       )}
 
       <p className="text-xs text-slate-500">

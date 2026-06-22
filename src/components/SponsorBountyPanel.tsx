@@ -64,6 +64,12 @@ export function SponsorBountyPanel() {
     }
   }, [isSuccess, phase, refetchAllowance]);
 
+  // Also drop phase to idle on writeContract error so the CTA doesn't stay
+  // stuck on "Approving…" / "Topping up…" after the wallet rejects.
+  useEffect(() => {
+    if (writeError) setPhase("idle");
+  }, [writeError]);
+
   // Reset wagmi state on chain flip — Stacks branch shows a celo-only notice
   // and shouldn't carry a stale Celo hash or phase.
   useEffect(() => {

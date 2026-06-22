@@ -62,7 +62,7 @@ export function OnchainProfile() {
     query: { enabled, refetchInterval: 60_000 },
   });
 
-  const { writeContract, data: claimHash, isPending: claimSigning, variables: claimVars, reset: resetClaim } =
+  const { writeContract, data: claimHash, isPending: claimSigning, variables: claimVars, reset: resetClaim, error: claimError } =
     useWriteContract();
   const { isLoading: claimMining, isSuccess: claimConfirmed } = useWaitForTransactionReceipt({
     hash: claimHash,
@@ -194,9 +194,14 @@ export function OnchainProfile() {
 
             {claimHash && (
               <div className="mt-2 flex items-center gap-3 text-[11px] font-mono text-slate-text">
-                <span>
-                  tx <span className="text-ink-blue">{claimHash.slice(0, 10)}…</span>
-                </span>
+                <a
+                  href={`https://celoscan.io/tx/${claimHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-action-orange underline"
+                >
+                  view tx ↗ ({claimHash.slice(0, 10)}…)
+                </a>
                 {claimConfirmed && (
                   <span className="text-success-moss">badge minted ✓</span>
                 )}
@@ -204,6 +209,11 @@ export function OnchainProfile() {
                   reset
                 </button>
               </div>
+            )}
+            {claimError && (
+              <p className="mt-2 text-[11px] text-red-600">
+                {claimError.message.split("\n")[0]}
+              </p>
             )}
           </div>
         </div>

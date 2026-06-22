@@ -15,7 +15,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="app-shell flex min-h-screen items-center justify-center px-5 py-20">
+    <main className="app-shell flex min-h-[100svh] items-center justify-center px-5 py-20">
       <div className="surface-elevated max-w-md rounded-2xl p-8 text-center">
         <div
           className="font-mono text-[11px] uppercase tracking-[0.15em]"

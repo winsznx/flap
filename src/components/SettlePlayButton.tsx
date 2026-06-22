@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useChainKind } from "@/chain/ChainProvider";
 import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
@@ -43,6 +43,11 @@ export function SettlePlayButton() {
   const canSubmit =
     isFlapDeployed && play && isOpen && hasScore && !mining && !isPending;
 
+  const refetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (refetchTimer.current) clearTimeout(refetchTimer.current);
+  }, []);
+
   function submit() {
     if (playId === undefined) return;
     writeContract({
@@ -51,7 +56,11 @@ export function SettlePlayButton() {
       functionName: "settlePlay",
       args: [playId],
     });
-    setTimeout(() => refetch().catch(() => undefined), 6_000);
+    if (refetchTimer.current) clearTimeout(refetchTimer.current);
+    refetchTimer.current = setTimeout(
+      () => refetch().catch(() => undefined),
+      6_000,
+    );
   }
 
   const stateLabel = (() => {

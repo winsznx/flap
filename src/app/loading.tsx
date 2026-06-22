@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main className="app-shell flex min-h-screen items-center justify-center px-5 py-20">
+    <main className="app-shell flex min-h-[100svh] items-center justify-center px-5 py-20">
       <div className="flex flex-col items-center gap-4 text-center">
         <span
           className="h-2 w-24 animate-pulse rounded-full"

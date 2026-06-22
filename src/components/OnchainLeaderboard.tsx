@@ -111,6 +111,8 @@ export function OnchainLeaderboard() {
     return (stacksQuery.data ?? []).reduce((s, r) => s + r.microStxMoved, 0n);
   }, [chain, celoQuery.data, stacksQuery.data]);
   const isLoading = chain === "celo" ? celoQuery.isLoading : stacksQuery.isLoading;
+  const isError = chain === "celo" ? celoQuery.isError : stacksQuery.isError;
+  const queryError = chain === "celo" ? celoQuery.error : stacksQuery.error;
   const dataUpdatedAt = chain === "celo" ? celoQuery.dataUpdatedAt : stacksQuery.dataUpdatedAt;
 
   if (chain === "celo" && !isFlapDeployed) {
@@ -155,6 +157,17 @@ export function OnchainLeaderboard() {
         {isLoading ? (
           <div className="px-6 py-16 text-center">
             <p className="font-mono text-xs uppercase tracking-widest" style={{ color: "var(--color-slate-text)" }}>Indexing on-chain events…</p>
+          </div>
+        ) : isError ? (
+          <div className="px-6 py-16 text-center space-y-2">
+            <p className="font-mono text-xs uppercase tracking-widest text-red-600">
+              {chain === "celo" ? "Celo RPC error" : "Hiro RPC error"} — refresh to retry
+            </p>
+            {queryError && (
+              <p className="font-mono text-[10px]" style={{ color: "var(--color-slate-text)" }}>
+                {queryError.message.split("\n")[0]}
+              </p>
+            )}
           </div>
         ) : top.length === 0 ? (
           <div className="px-6 py-16 text-center">

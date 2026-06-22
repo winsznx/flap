@@ -34,7 +34,7 @@ export function SettlePlayButton() {
     query: { enabled: isFlapDeployed && playId !== undefined, refetchInterval: 20_000 },
   });
 
-  const { writeContract, data: hash, isPending } = useWriteContract();
+  const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const isOpen = play?.state === 1; // PlayState.Open
@@ -91,6 +91,9 @@ export function SettlePlayButton() {
       >
         {mining ? "Settling…" : isSuccess ? "Settled ✓" : "Settle play"}
       </button>
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
+      )}
     </div>
   );
 }

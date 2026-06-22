@@ -44,20 +44,32 @@ export function SponsorBountyPanel() {
     query: { enabled: isConnected && isFlapDeployed && !!address },
   });
 
-  const { writeContract, data: hash, reset, isPending } = useWriteContract();
+  const { writeContract, data: hash, reset, isPending, error: writeError } =
+    useWriteContract();
   const { isLoading: mining, isSuccess } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: !!hash },
   });
 
   // Refetch allowance after the approve receipt confirms so the next click
-  // fires sponsorDailyBounty instead of sending another approve.
+  // fires sponsorDailyBounty instead of sending another approve. Drop phase to
+  // idle once the sponsor receipt lands so the next top-up doesn't start in a
+  // stale "Topping up…" CTA.
   useEffect(() => {
     if (isSuccess && phase === "approving") {
       void refetchAllowance();
       setPhase("sponsoring");
+    } else if (isSuccess && phase === "sponsoring") {
+      setPhase("idle");
     }
   }, [isSuccess, phase, refetchAllowance]);
+
+  // Reset wagmi state on chain flip — Stacks branch shows a celo-only notice
+  // and shouldn't carry a stale Celo hash or phase.
+  useEffect(() => {
+    reset();
+    setPhase("idle");
+  }, [kind, reset]);
 
   const needsApprove = !allowance || (allowance as bigint) < wei;
   const enabled = isConnected && isFlapDeployed && !mining && !isPending && today !== undefined;
@@ -138,11 +150,21 @@ export function SponsorBountyPanel() {
 
       {hash && (
         <div className="flex justify-between items-center text-xs text-slate-500">
-          <span>tx: {hash.slice(0, 10)}…</span>
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-action-orange underline"
+          >
+            view tx ↗ <span className="font-mono">({hash.slice(0, 10)}…)</span>
+          </a>
           <button type="button" onClick={() => reset()} className="underline">
             reset
           </button>
         </div>
+      )}
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
       )}
 
       <p className="text-xs text-slate-500">

@@ -137,11 +137,10 @@ export function OnchainLeaderboard() {
 
       <div className="mt-8 surface-elevated rounded-lg overflow-hidden">
         <div
-          className="grid items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 border-b"
+          className="grid items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 border-b grid-cols-[32px_1fr_56px_64px] sm:grid-cols-[56px_1fr_92px_160px_120px]"
           style={{
             background: "var(--color-fog-gray)",
             borderColor: "var(--color-steel-gray)",
-            gridTemplateColumns: "44px 1fr 72px 140px 96px",
           }}
         >
           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.15em] font-mono" style={{ color: "var(--color-slate-text)" }}>Rank</span>
@@ -166,10 +165,9 @@ export function OnchainLeaderboard() {
             {top.map((row, idx) => (
               <li
                 key={row.address}
-                className="grid items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 border-b last:border-b-0 transition-colors hover:bg-[var(--color-fog-gray)]"
+                className="grid items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 border-b last:border-b-0 transition-colors hover:bg-[var(--color-fog-gray)] grid-cols-[32px_1fr_56px_64px] sm:grid-cols-[56px_1fr_92px_160px_120px]"
                 style={{
                   borderColor: "var(--color-steel-gray)",
-                  gridTemplateColumns: "44px 1fr 72px 140px 96px",
                 }}
               >
                 <RankCell rank={idx + 1} />

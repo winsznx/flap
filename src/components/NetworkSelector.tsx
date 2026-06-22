@@ -22,7 +22,7 @@ export function NetworkSelector() {
             onClick={() => setKind(k)}
             className={[
               "nav-link",
-              "min-w-[76px] justify-center",
+              "min-w-[64px] sm:min-w-[76px] justify-center",
               active ? "bg-white shadow-sm" : "bg-transparent",
             ].join(" ")}
             aria-pressed={active}

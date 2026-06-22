@@ -172,7 +172,7 @@ export function OnchainProfile() {
                       type="button"
                       onClick={() => claim(m)}
                       disabled={pending || claimSigning || claimMining}
-                      className="px-3 py-1 rounded-full text-[12px] font-mono bg-action-orange/15 text-action-orange border border-action-orange/40 hover:bg-action-orange/25 disabled:opacity-50"
+                      className="px-3 py-1 min-h-[44px] rounded-full text-[12px] font-mono bg-action-orange/15 text-action-orange border border-action-orange/40 hover:bg-action-orange/25 disabled:opacity-50"
                       title="Mint your streak badge — soulbound, sticks to this wallet forever."
                     >
                       {pending ? `${m}d minting…` : `${m}d — claim →`}

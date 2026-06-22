@@ -43,20 +43,33 @@ export function StartPlayPanel() {
     query: { enabled: kind === "celo" && isConnected && isFlapDeployed && !!address },
   });
 
-  const { writeContract, data: hash, reset, isPending } = useWriteContract();
+  const { writeContract, data: hash, reset, isPending, error: writeError } =
+    useWriteContract();
   const { isLoading: mining, isSuccess: confirmed, data: receipt } = useWaitForTransactionReceipt({
     hash,
     query: { enabled: !!hash },
   });
 
   // Refetch allowance after the approve receipt confirms so the next click
-  // fires Flap.startPlay instead of sending another approve.
+  // fires Flap.startPlay instead of sending another approve. Once the start
+  // receipt lands drop phase to idle so the next click starts clean.
   useEffect(() => {
     if (confirmed && phase === "approving") {
       void refetchAllowance();
       setPhase("starting");
+    } else if (confirmed && phase === "starting") {
+      setPhase("idle");
     }
   }, [confirmed, phase, refetchAllowance]);
+
+  // Reset every per-tx state knob when the user flips chain — without this a
+  // mid-flight Celo "Approving…" CTA leaks into the Stacks tab.
+  const stxReset = stx.reset;
+  useEffect(() => {
+    reset();
+    stxReset();
+    setPhase("idle");
+  }, [kind, reset, stxReset]);
 
   // Parse PlayOpened from the receipt so the user gets the playId they need
   // for the Settle / Cancel panels — without this they have to scrape the
@@ -170,6 +183,13 @@ export function StartPlayPanel() {
       >
         {cta}
       </button>
+
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
+      )}
+      {stx.error && (
+        <p className="text-xs text-red-600">{stx.error.split("\n")[0]}</p>
+      )}
 
       {hash && (
         <div className="text-xs text-slate-500 flex items-center gap-3">

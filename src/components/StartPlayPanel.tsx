@@ -150,7 +150,7 @@ export function StartPlayPanel() {
               key={s}
               type="button"
               onClick={() => setStake(s)}
-              className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+              className={`px-3 py-1.5 min-h-[44px] rounded-full text-sm border transition-colors ${
                 stake === s
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-300 text-slate-700 hover:border-slate-500"

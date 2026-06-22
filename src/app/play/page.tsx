@@ -110,7 +110,7 @@ export default function PlayPage() {
   }, [handleTap]);
 
   return (
-    <div className="min-h-screen bg-ink-blue flex flex-col items-center justify-center p-4 py-8">
+    <div className="min-h-[100svh] bg-ink-blue flex flex-col items-center justify-center p-4 py-8">
       {/* Back nav */}
       <div className="mb-4 flex w-full max-w-[520px] flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/8 p-3 backdrop-blur">
         <Link

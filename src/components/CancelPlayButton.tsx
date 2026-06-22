@@ -54,7 +54,8 @@ export function CancelPlayButton() {
 
   const play = playData as unknown as PlayTuple | undefined;
 
-  const { writeContract, data: hash, isPending, reset } = useWriteContract();
+  const { writeContract, data: hash, isPending, reset, error: writeError } =
+    useWriteContract();
   const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({ hash });
 
   const isPlayer = play && address ? play[0].toLowerCase() === address.toLowerCase() : false;
@@ -129,12 +130,22 @@ export function CancelPlayButton() {
 
       {hash && (
         <div className="text-xs text-slate-500 flex items-center gap-2">
-          tx <span className="text-slate-900 font-mono">{hash.slice(0, 10)}…</span>
+          <a
+            href={`https://celoscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-action-orange underline"
+          >
+            view tx ↗ <span className="font-mono">({hash.slice(0, 10)}…)</span>
+          </a>
           {confirmed && <span className="text-emerald-600">refunded ✓</span>}
           <button type="button" onClick={() => reset()} className="ml-auto underline">
             reset
           </button>
         </div>
+      )}
+      {writeError && (
+        <p className="text-xs text-red-600">{writeError.message.split("\n")[0]}</p>
       )}
     </div>
   );

@@ -71,6 +71,12 @@ export function StartPlayPanel() {
     setPhase("idle");
   }, [kind, reset, stxReset]);
 
+  // Drop phase on wallet reject / contract revert so the next click starts
+  // clean instead of inheriting the stale CTA copy.
+  useEffect(() => {
+    if (writeError || stx.error) setPhase("idle");
+  }, [writeError, stx.error]);
+
   // Parse PlayOpened from the receipt so the user gets the playId they need
   // for the Settle / Cancel panels — without this they have to scrape the
   // log themselves and the post-start UX dead-ends.

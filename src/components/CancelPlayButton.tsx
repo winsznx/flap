@@ -13,13 +13,17 @@ import { CeloOnlyNotice } from "@/components/CeloOnlyNotice";
 import { flapAbi } from "@/lib/abi/flap";
 import { FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
-type PlayTuple = readonly [
-  player: `0x${string}`,
-  stake: bigint,
-  startedAt: bigint,
-  score: bigint,
-  state: number,
-];
+// getPlay's ABI output is a single tuple with named components, so viem
+// decodes the result as an OBJECT (not a positional array). Reading it via
+// play[0]/play[1]/play[3]/play[4] yields undefined and silently disables the
+// Cancel CTA for every real user.
+type Play = {
+  player: `0x${string}`;
+  stake: bigint;
+  startedAt: bigint;
+  score: bigint;
+  state: number;
+};
 
 /**
  * Refund a still-Open play if the score hasn't been reported yet. Useful when
@@ -52,16 +56,16 @@ export function CancelPlayButton() {
     query: { enabled: validId && isFlapDeployed && isConnected, refetchInterval: 30_000 },
   });
 
-  const play = playData as unknown as PlayTuple | undefined;
+  const play = playData as Play | undefined;
 
   const { writeContract, data: hash, isPending, reset, error: writeError } =
     useWriteContract();
   const { isLoading: mining, isSuccess: confirmed } = useWaitForTransactionReceipt({ hash });
 
-  const isPlayer = play && address ? play[0].toLowerCase() === address.toLowerCase() : false;
-  const state = play?.[4] ?? -1;
-  const score = play?.[3] ?? 0n;
-  const stake = play?.[1] ?? 0n;
+  const isPlayer = play && address ? play.player.toLowerCase() === address.toLowerCase() : false;
+  const state = play?.state ?? -1;
+  const score = play?.score ?? 0n;
+  const stake = play?.stake ?? 0n;
   const stakeStr = stake > 0n ? Number(formatUnits(stake, 18)).toFixed(2) : "—";
 
   const eligible =
@@ -81,7 +85,7 @@ export function CancelPlayButton() {
     if (!isFlapDeployed) return "Flap contract not deployed yet.";
     if (!isConnected) return "Connect a wallet to cancel a play.";
     if (!validId) return "Enter a play id.";
-    if (!play || play[0] === "0x0000000000000000000000000000000000000000") return "Play not found.";
+    if (!play || play.player === "0x0000000000000000000000000000000000000000") return "Play not found.";
     if (!isPlayer) return "Only the player who staked can cancel.";
     if (state !== 1) return state === 2 ? "Play already settled." : "Play already cancelled.";
     if (score > 0n) return "Score already reported — settle from /play instead.";

@@ -17,13 +17,13 @@ import { ACTIVE_CHAIN_ID, FLAP_ADDRESS, isFlapDeployed } from "@/lib/wagmi";
 
 const LOOKBACK = 200_000n;
 
-type PlayTuple = readonly [
-  player: `0x${string}`,
-  stake: bigint,
-  startedAt: bigint,
-  score: bigint,
-  state: number,
-];
+type Play = {
+  player: `0x${string}`;
+  stake: bigint;
+  startedAt: bigint;
+  score: bigint;
+  state: number;
+};
 
 const STATE_LABEL = ["None", "Open", "Settled", "Cancelled"] as const;
 
@@ -95,12 +95,12 @@ export function RecentPlays() {
       .map((id, idx) => {
         const r = results[idx];
         if (!r || r.status !== "success") return null;
-        const p = r.result as unknown as PlayTuple;
+        const p = r.result as Play;
         return {
           id,
-          stake: p[1],
-          score: p[3],
-          state: p[4],
+          stake: p.stake,
+          score: p.score,
+          state: p.state,
         };
       })
       .filter(Boolean) as Array<{ id: bigint; stake: bigint; score: bigint; state: number }>;

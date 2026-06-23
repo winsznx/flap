@@ -33,10 +33,26 @@ export function useStxBalance(): Result {
 
     fetch(`${STACKS_API}/extended/v2/addresses/${address}/balances/stx`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((data: { balance?: string }) => {
+      .then((data: unknown) => {
         if (cancelled) return;
+        // Validate the shape — a 200 with an unexpected body (e.g. an error
+        // JSON wrapped in 200) would otherwise silently fall through to
+        // BigInt("0"), surfacing as 0 STX with error=null and misleading the
+        // user about their balance.
+        const balance =
+          data && typeof data === "object" && "balance" in data
+            ? (data as { balance?: unknown }).balance
+            : undefined;
+        if (typeof balance !== "string" || !/^\d+$/.test(balance)) {
+          setState({
+            balanceMicroStx: 0n,
+            loading: false,
+            error: "unexpected hiro response shape",
+          });
+          return;
+        }
         setState({
-          balanceMicroStx: BigInt(data.balance ?? "0"),
+          balanceMicroStx: BigInt(balance),
           loading: false,
           error: null,
         });

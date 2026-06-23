@@ -130,9 +130,15 @@ export function HopButton() {
         window.localStorage.getItem(`flap.hop.lastStx:${stxPrincipal}`) ??
         window.localStorage.getItem("flap.hop.lastStx");
       if (raw) {
+        // Guard with isFinite so a corrupted/legacy/tampered cooldown stamp
+        // doesn't silently disable the local cooldown via NaN > 0 being
+        // false; the documented intent is to gate the wallet popup on a
+        // recent local hop, not to fall through whenever the stamp is junk.
         const last = Number(raw);
-        const remaining = COOLDOWN_SEC - Math.floor((Date.now() - last) / 1000);
-        if (remaining > 0) stacksCooldownLabel = fmt(remaining);
+        if (Number.isFinite(last)) {
+          const remaining = COOLDOWN_SEC - Math.floor((Date.now() - last) / 1000);
+          if (remaining > 0) stacksCooldownLabel = fmt(remaining);
+        }
       }
     } catch {
       /* ignore */

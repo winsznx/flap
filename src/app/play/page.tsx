@@ -23,11 +23,16 @@ export default function PlayPage() {
   const [coins, setCoins] = useState(0);
   const [highScore, setHighScore] = useState(0);
 
-  // Load high score from localStorage
+  // Load high score from localStorage. Guard parseInt with isFinite so a
+  // tampered or non-numeric value doesn't poison highScore as NaN — every
+  // future comparison would be false and the New High Score banner would
+  // never fire (profile/page.tsx already uses this guard).
   useEffect(() => {
     const id = window.setTimeout(() => {
       const saved = localStorage.getItem("flap_highscore");
-      if (saved) setHighScore(parseInt(saved, 10));
+      if (!saved) return;
+      const parsed = parseInt(saved, 10);
+      if (Number.isFinite(parsed) && parsed >= 0) setHighScore(parsed);
     }, 0);
     return () => window.clearTimeout(id);
   }, []);
@@ -45,16 +50,28 @@ export default function PlayPage() {
         setCoins(data?.coins as number);
         setGameState("over");
 
-        // Update high score
+        // Update high score — guard the parseInt with isFinite so a poisoned
+        // value doesn't lock new genuine high scores out forever (NaN > NaN
+        // is false, so the next write would never overwrite the bad value).
         const saved = localStorage.getItem("flap_highscore");
-        const current = saved ? parseInt(saved, 10) : 0;
+        const parsedSaved = saved ? parseInt(saved, 10) : 0;
+        const current = Number.isFinite(parsedSaved) && parsedSaved >= 0 ? parsedSaved : 0;
         if (finalScore > current) {
           localStorage.setItem("flap_highscore", String(finalScore));
           setHighScore(finalScore);
         }
 
-        // Update game history
-        const history = JSON.parse(localStorage.getItem("flap_history") || "[]");
+        // Update game history — JSON.parse without try/catch crashed the
+        // death-event hot path if flap_history was corrupted; profile/page.tsx
+        // already wraps the same key defensively.
+        let history: unknown[] = [];
+        try {
+          const raw = localStorage.getItem("flap_history");
+          const parsed = raw ? JSON.parse(raw) : [];
+          if (Array.isArray(parsed)) history = parsed;
+        } catch {
+          history = [];
+        }
         history.unshift({
           score: finalScore,
           coins: data?.coins,

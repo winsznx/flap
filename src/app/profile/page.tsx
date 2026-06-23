@@ -42,9 +42,12 @@ export default function ProfilePage() {
     return () => window.clearTimeout(id);
   }, []);
 
-  const totalCoins = history.reduce((sum, g) => sum + (g.coins || 0), 0);
+  const totalCoins = history.reduce((sum, g) => sum + (Number(g.coins) || 0), 0);
+  // Coerce score the same way coins is — a single corrupt/missing field made
+  // the reduce sum NaN, which Math.round preserved, and the Avg Score tile
+  // rendered the literal string "NaN".
   const avgScore = totalGames > 0
-    ? Math.round(history.reduce((sum, g) => sum + g.score, 0) / totalGames)
+    ? Math.round(history.reduce((sum, g) => sum + (Number(g.score) || 0), 0) / totalGames)
     : 0;
 
   return (

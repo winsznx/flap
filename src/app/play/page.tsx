@@ -191,8 +191,15 @@ export default function PlayPage() {
                 <button
                   key={d}
                   aria-pressed={difficulty === d}
+                  disabled={gameState !== "menu"}
                   onClick={(e) => {
+                    // Only allow difficulty toggle from the menu — toggling
+                    // mid-game called initEngine(), which stopped the rAF loop
+                    // but left handleGameEvent's closure capturing the old
+                    // difficulty until React reconciled, so the next death
+                    // recorded the wrong physics tier in flap_history.
                     e.stopPropagation();
+                    if (gameState !== "menu") return;
                     setDifficulty(d);
                   }}
                   className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all ${

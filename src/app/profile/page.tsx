@@ -26,8 +26,21 @@ export default function ProfilePage() {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed)) {
-            setHistory(parsed as GameRecord[]);
-            setTotalGames(parsed.length);
+            // Validate each entry's shape — entries from a pre-fix client
+            // could be missing fields, and one bad row crashed the .map()
+            // that renders the history list (game.difficulty undefined →
+            // tailwind ternary chain still works but timestamp.toLocaleDateString
+            // throws on undefined).
+            const cleaned = parsed.filter(
+              (g): g is GameRecord =>
+                !!g &&
+                typeof g === "object" &&
+                typeof (g as { score?: unknown }).score === "number" &&
+                typeof (g as { difficulty?: unknown }).difficulty === "string" &&
+                typeof (g as { timestamp?: unknown }).timestamp === "string",
+            );
+            setHistory(cleaned);
+            setTotalGames(cleaned.length);
           }
         }
         const hs = localStorage.getItem("flap_highscore");

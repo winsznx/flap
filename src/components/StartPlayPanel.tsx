@@ -186,6 +186,7 @@ export function StartPlayPanel() {
         type="button"
         onClick={start}
         disabled={!enabled}
+        aria-busy={mining || isPending || stx.pending}
         className="w-full px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium disabled:opacity-40"
       >
         {cta}

@@ -167,6 +167,7 @@ export function HopButton() {
         type="button"
         onClick={submit}
         disabled={!canSubmit}
+        aria-busy={mining || isPending || stx.pending}
         className="px-4 py-2 min-h-[44px] min-w-[140px] inline-flex items-center justify-center rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-40"
       >
         {cta}

@@ -27,7 +27,7 @@ export function SponsorBountyPanel() {
   const [amount, setAmount] = useState<number>(5);
   const [phase, setPhase] = useState<"idle" | "approving" | "sponsoring">("idle");
 
-  const { data: today } = useReadContract({
+  const { data: today, refetch: refetchToday } = useReadContract({
     abi: flapAbi,
     address: FLAP_ADDRESS,
     functionName: "today",
@@ -87,7 +87,7 @@ export function SponsorBountyPanel() {
   const needsApprove = !allowance || (allowance as bigint) < wei;
   const enabled = isConnected && isFlapDeployed && !mining && !isPending && today !== undefined;
 
-  function submit() {
+  async function submit() {
     if (today === undefined) return;
     if (needsApprove) {
       setPhase("approving");
@@ -99,12 +99,23 @@ export function SponsorBountyPanel() {
       });
       return;
     }
+    // The day index is cached at 60s, but day boundaries (and finalize calls)
+    // can land mid-window. Re-read today right before sponsoring so a stale
+    // cache doesn't credit yesterday's pool when the day just rolled — that
+    // sponsorship would land on a day the user didn't intend.
+    let dayArg = today;
+    try {
+      const fresh = await refetchToday();
+      if (fresh.data !== undefined) dayArg = fresh.data;
+    } catch {
+      /* fall through with cached today */
+    }
     setPhase("sponsoring");
     writeContract({
       abi: flapAbi,
       address: FLAP_ADDRESS,
       functionName: "sponsorDailyBounty",
-      args: [today, wei],
+      args: [dayArg, wei],
     });
   }
 

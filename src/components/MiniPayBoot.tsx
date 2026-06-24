@@ -20,7 +20,10 @@ export function MiniPayBoot() {
     const eth = (globalThis as { ethereum?: { isMiniPay?: boolean } }).ethereum;
     if (eth?.isMiniPay) {
       tried.current = true;
-      connect({ connector: injected({ target: "metaMask" }) });
+      // Bare injected() instead of target:"metaMask" — MiniPay sets isMiniPay
+      // but not isMetaMask, so the target descriptor fails to discover the
+      // provider in newer MiniPay builds.
+      connect({ connector: injected() });
     }
   }, [isConnected, connect]);
 

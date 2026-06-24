@@ -86,7 +86,7 @@ export function SettlePlayButton() {
       <input
         type="text"
         inputMode="numeric"
-        placeholder="play id"
+        placeholder="play id" aria-label="Play id"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-slate-400"

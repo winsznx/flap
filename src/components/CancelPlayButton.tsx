@@ -111,7 +111,7 @@ export function CancelPlayButton() {
         min={0}
         value={playId}
         onChange={(e) => setPlayId(e.target.value)}
-        placeholder="play id"
+        placeholder="play id" aria-label="Play id"
         className="w-full font-mono text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-900"
       />
 

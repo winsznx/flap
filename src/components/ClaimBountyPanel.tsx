@@ -130,6 +130,7 @@ export function ClaimBountyPanel() {
         type="button"
         onClick={claim}
         disabled={!canClaim}
+        aria-busy={mining || isPending}
         className="w-full px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium disabled:opacity-40"
       >
         {cta}

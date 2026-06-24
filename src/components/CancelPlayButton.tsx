@@ -127,6 +127,7 @@ export function CancelPlayButton() {
         type="button"
         onClick={submit}
         disabled={!eligible || mining || isPending}
+        aria-busy={mining || isPending}
         className="w-full px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium disabled:opacity-40"
       >
         {mining ? "Mining…" : isPending ? "Waiting for wallet…" : "Cancel & refund stake"}

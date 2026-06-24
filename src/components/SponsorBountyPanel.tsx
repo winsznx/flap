@@ -157,6 +157,7 @@ export function SponsorBountyPanel() {
         type="button"
         onClick={submit}
         disabled={!enabled}
+        aria-busy={mining || isPending}
         className="w-full px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium disabled:opacity-40"
       >
         {cta}

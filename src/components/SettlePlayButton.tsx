@@ -96,6 +96,7 @@ export function SettlePlayButton() {
         type="button"
         onClick={submit}
         disabled={!canSubmit}
+        aria-busy={mining || isPending}
         className="w-full px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium disabled:opacity-40"
       >
         {mining ? "Settling…" : isSuccess ? "Settled ✓" : "Settle play"}

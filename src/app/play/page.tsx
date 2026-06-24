@@ -166,12 +166,17 @@ export default function PlayPage() {
 
         {/* Menu overlay */}
         {gameState === "menu" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink-blue/50 backdrop-blur-sm rounded-2xl">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="flap-menu-title"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-ink-blue/50 backdrop-blur-sm rounded-2xl"
+          >
             <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-white/70 font-mono">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-white/70" />
               Demo mode · no stake
             </span>
-            <h2 className="text-[32px] font-semibold text-white mb-2 tracking-[-0.8px]">Flap</h2>
+            <h2 id="flap-menu-title" className="text-[32px] font-semibold text-white mb-2 tracking-[-0.8px]">Flap</h2>
             <p className="text-[14px] text-white/60 mb-2">Tap to fly. Stake cUSD on Celo or STX on Stacks below to play for real.</p>
             <a
               href="#stake-play"
@@ -220,9 +225,14 @@ export default function PlayPage() {
 
         {/* Game over overlay (enhanced) */}
         {gameState === "over" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink-blue/70 backdrop-blur-sm rounded-2xl">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="flap-gameover-title"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-ink-blue/70 backdrop-blur-sm rounded-2xl"
+          >
             <div className="card-surface p-8 text-center max-w-[320px] mx-4">
-              <h2 className="text-[28px] font-semibold text-ink-blue mb-1 tracking-[-0.48px]">
+              <h2 id="flap-gameover-title" className="text-[28px] font-semibold text-ink-blue mb-1 tracking-[-0.48px]">
                 Game Over
               </h2>
 

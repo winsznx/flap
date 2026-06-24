@@ -85,17 +85,30 @@ export function HopButton() {
       s = await connectStacks();
       if (!s.isConnected) return;
     }
+    // Stamp the cooldown BEFORE firing stx.call() so a second tab opened on
+    // the same wallet sees the in-flight Hop immediately and short-circuits
+    // its own popup. The previous post-call stamp let two tabs race past the
+    // local guard (the on-chain cooldown still applies, so only one succeeds,
+    // but the second wallet popup was avoidable noise).
+    if (s.address) {
+      try {
+        window.localStorage.setItem(`flap.hop.lastStx:${s.address}`, String(Date.now()));
+      } catch {
+        /* ignore */
+      }
+    }
     const res = await stx.call({
       contractAddress: FLAP_STX_DEPLOYER,
       contractName: FLAP_STX_HOP_CONTRACT,
       functionName: FLAP_STX_DAILY_HOP_FN,
       args: [],
     });
-    if (res && s.address) {
+    // If the broadcast itself failed (wallet rejected, network down), roll
+    // the cooldown stamp back so the user can retry without waiting 22h
+    // against a tx that never happened.
+    if (!res && s.address) {
       try {
-        // Key the cooldown stamp by Stacks principal so swapping wallets in
-        // the same browser doesn't inherit the previous user's cooldown.
-        window.localStorage.setItem(`flap.hop.lastStx:${s.address}`, String(Date.now()));
+        window.localStorage.removeItem(`flap.hop.lastStx:${s.address}`);
       } catch {
         /* ignore */
       }

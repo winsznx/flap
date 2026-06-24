@@ -190,6 +190,7 @@ export default function PlayPage() {
               {(["chill", "normal", "beast"] as Difficulty[]).map((d) => (
                 <button
                   key={d}
+                  aria-pressed={difficulty === d}
                   onClick={(e) => {
                     e.stopPropagation();
                     setDifficulty(d);

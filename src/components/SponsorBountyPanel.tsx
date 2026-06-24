@@ -133,6 +133,7 @@ export function SponsorBountyPanel() {
           <button
             key={p}
             type="button"
+            aria-pressed={amount === p}
             onClick={() => setAmount(p)}
             className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
               amount === p

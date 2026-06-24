@@ -168,6 +168,7 @@ export function StartPlayPanel() {
             <button
               key={s}
               type="button"
+              aria-pressed={stake === s}
               onClick={() => setStake(s)}
               className={`px-3 py-1.5 min-h-[44px] rounded-full text-sm border transition-colors ${
                 stake === s

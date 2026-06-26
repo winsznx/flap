@@ -53,21 +53,21 @@
 
   /* Spacing */
   --spacing-unit: 4px;
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-48: 48px;
-  --spacing-64: 64px;
-  --spacing-72: 72px;
-  --spacing-80: 80px;
-  --spacing-96: 96px;
-  --spacing-100: 100px;
-  --spacing-144: 144px;
+  --space-token-4: 4px;
+  --space-token-8: 8px;
+  --space-token-12: 12px;
+  --space-token-16: 16px;
+  --space-token-20: 20px;
+  --space-token-24: 24px;
+  --space-token-32: 32px;
+  --space-token-40: 40px;
+  --space-token-48: 48px;
+  --space-token-64: 64px;
+  --space-token-72: 72px;
+  --space-token-80: 80px;
+  --space-token-96: 96px;
+  --space-token-100: 100px;
+  --space-token-144: 144px;
 
   /* Layout */
   --section-gap: 48px;

@@ -63,25 +63,32 @@ export function SponsorBountyPanel() {
   // idle once the sponsor receipt lands so the next top-up doesn't start in a
   // stale "Topping up…" CTA.
   useEffect(() => {
+    let nextPhase: typeof phase | null = null;
     if (isSuccess && phase === "approving") {
       void refetchAllowance();
-      setPhase("sponsoring");
+      nextPhase = "sponsoring";
     } else if (isSuccess && phase === "sponsoring") {
-      setPhase("idle");
+      nextPhase = "idle";
     }
+    if (!nextPhase) return;
+    const id = window.setTimeout(() => setPhase(nextPhase), 0);
+    return () => window.clearTimeout(id);
   }, [isSuccess, phase, refetchAllowance]);
 
   // Also drop phase to idle on writeContract error so the CTA doesn't stay
   // stuck on "Approving…" / "Topping up…" after the wallet rejects.
   useEffect(() => {
-    if (writeError) setPhase("idle");
+    if (!writeError) return;
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [writeError]);
 
   // Reset wagmi state on chain flip — Stacks branch shows a celo-only notice
   // and shouldn't carry a stale Celo hash or phase.
   useEffect(() => {
     reset();
-    setPhase("idle");
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [kind, reset]);
 
   const needsApprove = !allowance || (allowance as bigint) < wei;

@@ -148,8 +148,9 @@ export function HopButton() {
         // false; the documented intent is to gate the wallet popup on a
         // recent local hop, not to fall through whenever the stamp is junk.
         const last = Number(raw);
-        if (Number.isFinite(last)) {
-          const remaining = COOLDOWN_SEC - Math.floor((Date.now() - last) / 1000);
+        if (Number.isFinite(last) && nowSec > 0) {
+          const elapsed = nowSec - Math.floor(last / 1000);
+          const remaining = COOLDOWN_SEC - Math.max(0, elapsed);
           if (remaining > 0) stacksCooldownLabel = fmt(remaining);
         }
       }

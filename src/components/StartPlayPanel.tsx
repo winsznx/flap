@@ -54,12 +54,16 @@ export function StartPlayPanel() {
   // fires Flap.startPlay instead of sending another approve. Once the start
   // receipt lands drop phase to idle so the next click starts clean.
   useEffect(() => {
+    let nextPhase: typeof phase | null = null;
     if (confirmed && phase === "approving") {
       void refetchAllowance();
-      setPhase("starting");
+      nextPhase = "starting";
     } else if (confirmed && phase === "starting") {
-      setPhase("idle");
+      nextPhase = "idle";
     }
+    if (!nextPhase) return;
+    const id = window.setTimeout(() => setPhase(nextPhase), 0);
+    return () => window.clearTimeout(id);
   }, [confirmed, phase, refetchAllowance]);
 
   // Reset every per-tx state knob when the user flips chain — without this a
@@ -68,13 +72,16 @@ export function StartPlayPanel() {
   useEffect(() => {
     reset();
     stxReset();
-    setPhase("idle");
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [kind, reset, stxReset]);
 
   // Drop phase on wallet reject / contract revert so the next click starts
   // clean instead of inheriting the stale CTA copy.
   useEffect(() => {
-    if (writeError || stx.error) setPhase("idle");
+    if (!writeError && !stx.error) return;
+    const id = window.setTimeout(() => setPhase("idle"), 0);
+    return () => window.clearTimeout(id);
   }, [writeError, stx.error]);
 
   // Parse PlayOpened from the receipt so the user gets the playId they need

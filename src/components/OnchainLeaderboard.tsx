@@ -57,7 +57,8 @@ export function OnchainLeaderboard() {
   // local-only so the leaderboard doesn't silently re-route every other
   // panel on /play, /profile, etc.
   useEffect(() => {
-    setChain(kind);
+    const id = window.setTimeout(() => setChain(kind), 0);
+    return () => window.clearTimeout(id);
   }, [kind]);
 
   const celoQuery = useQuery({

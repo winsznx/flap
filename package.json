@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "audit:responsive": "node test/responsive-audit.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
@@ -30,6 +31,7 @@
     "@types/react-dom": "^19.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.5",
+    "playwright": "^1.61.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.88.0"

@@ -10,6 +10,8 @@
 
 # testing
 /coverage
+/test/screenshots/
+/test/responsive-report.json
 
 # next.js
 /.next/

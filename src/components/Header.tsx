@@ -22,7 +22,7 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3">
       <div className="mx-auto max-w-[1200px]">
-        <div className="nav-frame flex min-h-[60px] md:min-h-[72px] items-center justify-between gap-2 px-3 md:gap-5 md:px-6">
+        <div className="nav-frame flex min-h-[60px] lg:min-h-[72px] items-center justify-between gap-2 px-3 lg:gap-5 lg:px-6">
           <Link href="/" className="flex min-w-0 items-center gap-3 no-underline" aria-label="Flap home">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-action-orange)] shadow-[0_1px_3px_rgba(236,101,43,0.3)]">
               <span className="text-[13px] font-bold text-white">F</span>
@@ -37,7 +37,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-full bg-[var(--color-fog-gray)] p-1 md:flex">
+          <nav className="hidden items-center gap-1 rounded-full bg-[var(--color-fog-gray)] p-1 lg:flex">
             {[
               { label: "How It Works", href: "/#how-it-works" },
               { label: "Rewards", href: "/#rewards" },
@@ -49,7 +49,7 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <NetworkSelector />
             <Link href="/profile" className="btn-ghost">Profile</Link>
             <Link href="/play" className="btn-primary btn-compact">
@@ -58,9 +58,11 @@ export function Header() {
             <ConnectButton />
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <NetworkSelector />
-            <ConnectButton />
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
+            <div className="hidden items-center gap-2 sm:flex">
+              <NetworkSelector />
+              <ConnectButton />
+            </div>
             <button
               type="button"
               className="btn-ghost btn-compact"
@@ -78,7 +80,12 @@ export function Header() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div id="flap-mobile-menu" className="md:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
+          <div id="flap-mobile-menu" className="lg:hidden mt-3 rounded-xl border border-[var(--color-steel-gray)] bg-white/90 p-4 shadow-xl backdrop-blur-[16px] flex flex-col gap-1">
+            <div className="mb-3 grid gap-3 sm:hidden">
+              <NetworkSelector />
+              <ConnectButton />
+            </div>
+            <div className="mb-2 h-px bg-[var(--color-steel-gray)] sm:hidden" />
             {[
               { label: "How It Works", href: "/#how-it-works" },
               { label: "Rewards", href: "/#rewards" },

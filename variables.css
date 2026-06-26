@@ -52,7 +52,7 @@
   --font-weight-semibold: 600;
 
   /* Spacing */
-  --spacing-unit: 4px;
+  --space-token-unit: 4px;
   --space-token-4: 4px;
   --space-token-8: 8px;
   --space-token-12: 12px;

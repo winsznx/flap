@@ -24,12 +24,20 @@ export function useStacksSession(): StacksSessionState {
   const [state, setState] = useState<StacksSessionState>({ isConnected: false, address: null });
 
   useEffect(() => {
+    let cancelled = false;
+    const sync = (next: StacksSessionState) => {
+      if (!cancelled) setState(next);
+    };
+
     if (kind !== "stacks") {
-      setState({ isConnected: false, address: null });
-      return;
+      const id = window.setTimeout(() => sync({ isConnected: false, address: null }), 0);
+      return () => {
+        cancelled = true;
+        window.clearTimeout(id);
+      };
     }
-    const tick = () => setState(readStacksSession());
-    tick();
+    const tick = () => sync(readStacksSession());
+    const initial = window.setTimeout(tick, 0);
 
     const onStorage = (e: StorageEvent) => {
       // Both the v8 canonical key and the legacy blockstack-session key get
@@ -50,7 +58,9 @@ export function useStacksSession(): StacksSessionState {
       window.removeEventListener("storage", onStorage);
       window.removeEventListener("focus", tick);
       document.removeEventListener("visibilitychange", onVisible);
+      window.clearTimeout(initial);
       window.clearInterval(interval);
+      cancelled = true;
     };
   }, [kind]);
 

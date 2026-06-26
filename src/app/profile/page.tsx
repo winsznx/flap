@@ -128,31 +128,45 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="divide-y divide-steel-gray/50">
-              {history.slice(0, 20).map((game, i) => (
-                <div key={i} className="px-6 py-3 flex items-center justify-between hover:bg-fog-gray/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <span className="text-[12px] text-slate-text font-mono w-6">#{i + 1}</span>
-                    <div>
+              {history.slice(0, 20).map((game, i) => {
+                // Clamp the difficulty label so a corrupted/long localStorage
+                // entry (or, in the responsive audit, a stress-test seed) can't
+                // overflow the row. The known-good values are chill/normal/
+                // beast — anything else is shown shortened in monospace and
+                // the row truncates rather than breaking the page width.
+                const knownDifficulty =
+                  game.difficulty === "chill" ||
+                  game.difficulty === "normal" ||
+                  game.difficulty === "beast";
+                const difficultyLabel = knownDifficulty
+                  ? game.difficulty
+                  : String(game.difficulty ?? "?").slice(0, 8);
+                return (
+                <div key={i} className="px-6 py-3 flex items-center justify-between gap-3 hover:bg-fog-gray/50 transition-colors">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <span className="text-[12px] text-slate-text font-mono w-6 shrink-0">#{i + 1}</span>
+                    <div className="min-w-0">
                       <span className="text-[14px] font-medium text-ink-blue">Score: {game.score}</span>
                       <span className="text-[12px] text-slate-text ml-3">💰 {game.coins || 0}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
-                      game.difficulty === "beast"
+                  <div className="flex shrink-0 items-center gap-4">
+                    <span className={`max-w-[10ch] truncate text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                      knownDifficulty && game.difficulty === "beast"
                         ? "bg-action-orange/10 text-action-orange"
-                        : game.difficulty === "chill"
+                        : knownDifficulty && game.difficulty === "chill"
                         ? "bg-success-moss/10 text-success-moss"
                         : "bg-deep-plum/10 text-deep-plum"
                     }`}>
-                      {game.difficulty}
+                      {difficultyLabel}
                     </span>
-                    <span className="text-[11px] text-slate-text font-mono">
+                    <span className="text-[11px] text-slate-text font-mono whitespace-nowrap">
                       {new Date(game.timestamp).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

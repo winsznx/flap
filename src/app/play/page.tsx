@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { FlapEngine, type GameEventType } from "@/game/engine";
-import type { Difficulty } from "@/game/settings";
+import { GAME_SETTINGS, type Difficulty } from "@/game/settings";
 import Link from "next/link";
 import { BountyPill } from "@/components/BountyPill";
 import { CancelPlayButton } from "@/components/CancelPlayButton";
@@ -129,7 +129,7 @@ export default function PlayPage() {
   return (
     <div className="min-h-[100svh] bg-ink-blue flex flex-col items-center justify-center p-4 py-8">
       {/* Back nav */}
-      <div className="mb-4 flex w-full max-w-[520px] flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/8 p-3 backdrop-blur">
+      <div className="mb-4 flex w-full max-w-[520px] flex-col items-stretch justify-between gap-3 rounded-2xl border border-white/10 bg-white/8 p-3 backdrop-blur sm:flex-row sm:items-center">
         <Link
           href="/"
           className="text-[14px] text-white/60 hover:text-white transition-colors flex items-center gap-2 no-underline"
@@ -139,7 +139,7 @@ export default function PlayPage() {
           </svg>
           Back
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:justify-end">
           <BountyPill />
           <NetworkSelector />
           <ConnectButton />
@@ -147,17 +147,18 @@ export default function PlayPage() {
       </div>
 
       {/* Game container */}
-      <div className="relative">
+      <div className="relative w-full max-w-[420px]">
         <canvas
           ref={canvasRef}
-          className="rounded-2xl cursor-pointer touch-none"
+          width={GAME_SETTINGS.CANVAS.WIDTH}
+          height={GAME_SETTINGS.CANVAS.HEIGHT}
+          className="block w-full rounded-2xl cursor-pointer touch-none"
           onClick={handleTap}
           onTouchStart={(e) => {
             e.preventDefault();
             handleTap();
           }}
           style={{
-            maxWidth: "100%",
             height: "auto",
             boxShadow:
               "rgba(0, 0, 0, 0.3) 0px 40px 60px 0px, rgba(236, 101, 43, 0.1) 0px 0px 80px 0px",
